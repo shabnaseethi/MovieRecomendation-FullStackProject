@@ -24,4 +24,5 @@ public class Movie {
     public void setName(String name) {
         this.name = name;
     }
+
 }
