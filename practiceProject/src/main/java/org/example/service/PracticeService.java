@@ -10,7 +10,7 @@ public class PracticeService {
     }
 
     public String shabna(){
-        return null;
+        return "Shabna";
     }
 
     public String ruchita(){
