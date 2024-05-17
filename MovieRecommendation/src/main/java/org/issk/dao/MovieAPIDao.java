@@ -1,6 +1,6 @@
 package org.issk.dao;
 
-import org.issk.model.Movie;
+import org.issk.dto.Movie;
 
 import java.util.ArrayList;
 
