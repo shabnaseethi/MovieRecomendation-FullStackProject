@@ -1,0 +1,4 @@
+package org.issk.controller;
+
+public class MovieController {
+}
