@@ -2,8 +2,8 @@ package org.issk.dao;
 
 import org.issk.dto.User;
 
-import java.util.List;
+import java.security.NoSuchAlgorithmException;
 
 public interface UserDao {
-    List<User> createUser(User user);
+    boolean createUser(User user) throws NoSuchAlgorithmException;
 }
