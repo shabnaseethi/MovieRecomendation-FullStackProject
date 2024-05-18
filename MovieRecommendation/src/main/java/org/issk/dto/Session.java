@@ -1,22 +1,22 @@
 package org.issk.dto;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class Session {
-    private String sessionHash;
+    private String sessionId;
     private User user;
-    private LocalTime startTime;
+    private LocalDateTime startTime;
     private int periodHours;
 
     public Session() {
     }
 
-    public String getSessionHash() {
-        return sessionHash;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setSessionHash(String sessionHash) {
-        this.sessionHash = sessionHash;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public User getUser() {
@@ -27,11 +27,11 @@ public class Session {
         this.user = user;
     }
 
-    public LocalTime getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 

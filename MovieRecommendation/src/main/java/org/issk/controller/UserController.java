@@ -1,6 +1,7 @@
 package org.issk.controller;
 
 
+import org.issk.dto.Session;
 import org.issk.dto.User;
 import org.issk.service.UserService;
 import org.issk.service.UserServiceImpl;
@@ -20,5 +21,11 @@ public class UserController {
     @ResponseBody
     public int createUser(@RequestBody User user){
         return userService.createUser(user);
+    }
+
+    @PostMapping(value="/login",  consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Session login(@RequestBody User user){
+        return userService.login(user);
     }
 }
