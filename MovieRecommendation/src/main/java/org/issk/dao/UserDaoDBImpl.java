@@ -132,11 +132,10 @@ public class UserDaoDBImpl implements UserDao {
         }
     }
 
+    @Override
     public Session getSessionById(String sessionId) {
         try{
-            return jdbcTemplate.queryForObject("SELECT sessions.*, users.* " +
-                    "FROM sessions " +
-                    "LEFT JOIN ON sessions.sessionUser = users.uid WHERE sid = ?;", new SessionMapper(), sessionId);
+            return jdbcTemplate.queryForObject("SELECT * FROM sessions WHERE sessionId = ?;", new SessionMapper(), sessionId);
         } catch (DataAccessException e){
             return null;
         }
