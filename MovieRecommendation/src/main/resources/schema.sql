@@ -26,3 +26,4 @@ CREATE TABLE IF NOT EXISTS genre_preferences (
     FOREIGN KEY (genreId) REFERENCES genres(genreId)
 );
 
+

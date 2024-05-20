@@ -199,7 +199,7 @@ public class UserDaoDBImpl implements UserDao {
 
 //        get a list of genre IDS based on genre names
         List<Integer> genreIds = findGenreIds(user.getPreferredGenres().values().stream()
-                .map(Genre::getName)
+                .map(Genre::getName) // Extract the genreName from each Genr
                 .collect(Collectors.toList()));
 
         String query = "SELECT COUNT(*) FROM genre_preferences WHERE userId = ? AND genreId = ?";
@@ -234,9 +234,9 @@ public class UserDaoDBImpl implements UserDao {
     @Override
     public boolean removePreferences(User user) throws DataAccessException {
 
-
+        // Get a list of genre IDs based on genre names
         List<Integer> genreIds = findGenreIds(user.getPreferredGenres().values().stream()
-                .map(Genre::getName)
+                .map(Genre::getName) // Extract the genreName from each Genre object
                 .collect(Collectors.toList()));
         String query = "DELETE FROM genre_preferences WHERE genreId = ? AND userId = ?";
 
