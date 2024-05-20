@@ -1,0 +1,16 @@
+package org.issk.repository;
+
+import org.issk.dto.Movie;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface MovieRepository extends JpaRepository<Movie,Long> {
+
+    //List<Movie> findByGenre(String genre);
+    //List<Movie> findByRating(int rating);
+    //List<Movie> findByPreferences(String preferences);
+
+}
