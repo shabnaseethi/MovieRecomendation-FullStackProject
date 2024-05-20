@@ -7,8 +7,8 @@ public class User {
     private int userId;
     private String username;
     private String password;
-    private ArrayList<Genre> preferredGenres;
-    private ArrayList<Movie> favouriteMovies;
+    private HashMap<Integer, Genre> preferredGenres;
+    private HashMap<Integer, Movie> favouriteMovies;
 
     public User() {
     }
@@ -37,19 +37,19 @@ public class User {
         this.password = password;
     }
 
-    public ArrayList<Genre> getPreferredGenres() {
+    public HashMap<Integer, Genre> getPreferredGenres() {
         return preferredGenres;
     }
 
-    public void setPreferredGenres(ArrayList<Genre> preferredGenres) {
+    public void setPreferredGenres(HashMap<Integer, Genre> preferredGenres) {
         this.preferredGenres = preferredGenres;
     }
 
-    public ArrayList<Movie> getFavouriteMovies() {
+    public HashMap<Integer, Movie> getFavouriteMovies() {
         return favouriteMovies;
     }
 
-    public void setFavouriteMovies(ArrayList<Movie> favouriteMovies) {
+    public void setFavouriteMovies(HashMap<Integer, Movie> favouriteMovies) {
         this.favouriteMovies = favouriteMovies;
     }
 }

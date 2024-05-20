@@ -6,6 +6,7 @@ import org.issk.dto.User;
 import org.issk.service.UserService;
 import org.issk.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,9 @@ public class UserController {
 
     @PostMapping(value="/login",  consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Session login(@RequestBody User user){
-        return userService.login(user);
+    public ResponseEntity<Session> login(@RequestBody User user){
+        Session session = userService.login(user);
+        return (session == null) ? new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED) : new ResponseEntity<>(session, HttpStatus.ACCEPTED);
     }
 
 

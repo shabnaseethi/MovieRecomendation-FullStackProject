@@ -39,18 +39,22 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+
     @Override
     public Session login(User user){
         //Check to see if the username and password match one in the database
         boolean validUser;
         try { validUser = userDao.authenticateUser(user); } catch (NoSuchAlgorithmException e) { return null; }
 
-        //Get user's id in database
-        user.setUserId(userDao.getUserByUsername(user.getUsername()).getUserId());
-
         if (validUser){
             //Get single instance of current time
             LocalDateTime now = LocalDateTime.now();
+
+            //Get user from database
+            user = userDao.getUserByUsername(user.getUsername());
+
+            //Update user preferences from database
+            user = userDao.getUserPreferences(user);
 
             //Create sessionHash of username and current time
             //Turns the byte array from enHash into a string
