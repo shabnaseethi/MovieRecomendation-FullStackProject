@@ -52,5 +52,4 @@ public class User {
     public void setFavouriteMovies(HashMap<Integer, Movie> favouriteMovies) {
         this.favouriteMovies = favouriteMovies;
     }
-
 }

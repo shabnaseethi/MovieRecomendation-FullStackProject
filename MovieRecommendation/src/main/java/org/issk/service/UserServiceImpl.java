@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService{
             if (userDao.removePreferences(user)) {
                 return ResponseEntity.ok("Preferences removed successfully");
             } else {
-                return ResponseEntity.badRequest().body("Failed to remove preferences");
+                return ResponseEntity.badRequest().body("Failed to remove preferences/No preferences to remove");
             }
         } catch (InvalidSessionException | SessionNotFoundException e) {
             return ResponseEntity.badRequest().body("Invalid session or session not found");
