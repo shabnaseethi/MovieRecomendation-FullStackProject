@@ -28,4 +28,8 @@ class UserDaoDBImplTest {
         assertNotNull(session);
         assertEquals("testId", session.getSessionId());
     }
+    @Test
+    void editPreferencesTest(){
+
+    }
 }
