@@ -3,6 +3,11 @@ INSERT INTO users (userName, passwordHash) VALUES
 ('erik', 'c9d22bd28f57026a1648aa12686fc28e5d5f0c39d37a26eee32d3cb005a8584a'),
 ('person2', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8');
 
+-- Login info:
+-- aaron, (can't remember...)
+-- erik, cypher
+-- person2, password
+
 INSERT INTO genres (genreId,genreName) VALUES
 (28,'Action'),
 (18,'Drama');
