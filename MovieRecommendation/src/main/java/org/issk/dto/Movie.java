@@ -1,22 +1,31 @@
 package org.issk.dto;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.ArrayList;
 
+@Entity
 public class Movie {
-    private int movieId;
+
+    private String id;
     private String title;
-    private ArrayList<Genre> genres;
+    //private ArrayList<Genre> genres;
 
     public Movie() {
+
     }
 
-    public int getMovieId() {
-        return movieId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /*public int getMovieId() {
+        return movievId;
     }
 
     public void setMovieId(int movieId) {
-        this.movieId = movieId;
-    }
+        this.movievId = movieId;
+    }*/
 
     public String getTitle() {
         return title;
@@ -26,11 +35,20 @@ public class Movie {
         this.title = title;
     }
 
-    public ArrayList<Genre> getGenres() {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+/*public ArrayList<Genre> getGenres() {
         return genres;
     }
 
     public void setGenres(ArrayList<Genre> genres) {
         this.genres = genres;
-    }
+    }*/
 }
