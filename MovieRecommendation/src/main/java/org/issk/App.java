@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class App {
 
-    @Autowired
-    UserDaoDBImpl userDaoDB;
+    //@Autowired
+    //UserDaoDBImpl userDaoDB;
 
     public static void main(String[] args) {
         System.out.println("Hello world!");
