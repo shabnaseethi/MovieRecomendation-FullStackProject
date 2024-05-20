@@ -12,8 +12,6 @@ public class SessionMapper implements RowMapper<Session> {
     public Session mapRow(ResultSet rs, int rowNum) throws SQLException {
         Session session = new Session();
         session.setSessionId(rs.getString("sessionId"));
-        //TODO incorporate user into session
-        //session.setUser(new UserMapper());
         session.setStartTime(rs.getTimestamp("sessionStart").toLocalDateTime());
         session.setPeriodHours(rs.getInt("sessionPeriod"));
 

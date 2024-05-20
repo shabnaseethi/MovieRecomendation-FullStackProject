@@ -17,6 +17,8 @@ public interface UserDao {
 
     User getUserByUsername(String username);
 
+    User getUserPreferences(User user);
+
     Session getSessionById(String sessionId);
 
     byte[] enHash(String text) throws NoSuchAlgorithmException;
