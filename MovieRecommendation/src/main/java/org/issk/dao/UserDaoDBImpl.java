@@ -1,6 +1,7 @@
 package org.issk.dao;
 
 
+import org.issk.dto.Genre;
 import org.issk.dto.Session;
 import org.issk.dto.User;
 import org.issk.mappers.SessionMapper;
@@ -15,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserDaoDBImpl implements UserDao {
@@ -153,45 +157,88 @@ public class UserDaoDBImpl implements UserDao {
         return digest.digest(text.getBytes());
     }
 
+    /**
+     * Edits the user's genre preferences by adding new preferences.
+     *
+     * This method retrieves a list of genre IDs based on the genre names provided in the user's preferred genres.
+     * It then checks if each genre preference already exists for the user in the database. If a preference does not
+     * exist, it inserts a new preference into the database.
+     *
+     * @param user the user object containing the updated genre preferences and userID
+     * @return true if any new preferences were added successfully, false otherwise
+     * @throws DataAccessException if an error occurs while accessing the data source
+     */
     @Override
     public boolean editPreferences(User user) throws DataAccessException {
 
-        // Find the genreId by genre name
-        int genreId = findGenreIdByName(user.getPreferredGenres().get(0).getName());
-
-        if (genreId == -1) {
-//            If genreID not found
-            return false;
-        }
-        // Check if the given preference already exists for the user
+//        get a list of genre IDS based on genre names
+        List<Integer> genreIds = findGenreIds(user.getPreferredGenres().stream()
+                .map(Genre::getName)
+                .collect(Collectors.toList()));
 
         String query = "SELECT COUNT(*) FROM genre_preferences WHERE userId = ? AND genreId = ?";
-        int count = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), genreId);
-        if (count > 0) {
-            // Preference already exists
-            return false;
-        }
+        int rowsAffected = 0; //To keep track the number of rows affected by the query
 
-        // Insert the preference into the database
-        int rowsAltered = jdbcTemplate.update(
-                "INSERT INTO genre_preferences (userId, genreId) VALUES (?, ?);",
-                user.getUserId(),
-                genreId
-        );
-        return rowsAltered > 0; // Return true if update successful, false otherwise
+        for (Integer genreId : genreIds) {
+            Integer dbCount = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), genreId);
+            int count = (dbCount != null) ? dbCount : 0;
+            rowsAffected += count;
+            if (count == 0) {
+                int rowsAltered = jdbcTemplate.update(
+                        "INSERT INTO genre_preferences (userId, genreId) VALUES (?, ?);",
+                        user.getUserId(),
+                        genreId
+                );
+                rowsAffected += rowsAltered;
+            }
+        }
+        return rowsAffected > 0;
     }
+
+    /**
+     * Removes the user's genre preferences based on the provided user object.
+     *
+     * This method retrieves a list of genre IDs based on the genre names provided in the user's preferred genres.
+     * It then deletes the corresponding genre preferences from the database for the specified user and each genre ID.
+     *
+     * @param user the user object containing the genre preferences to remove and userID
+     * @return true if any preferences were successfully removed, false otherwise
+     * @throws DataAccessException if an error occurs while accessing the data source
+     */
     @Override
-    public boolean removePreferences(User user) {
+    public boolean removePreferences(User user) throws DataAccessException {
 
-        // Find the genreId by name
-        int genreId = findGenreIdByName(user.getPreferredGenres().get(0).getName());
-        if (genreId == -1) {
-            return false;
+        List<Integer> genreIds = findGenreIds(user.getPreferredGenres().stream()
+                .map(Genre::getName)
+                .collect(Collectors.toList()));
+
+        String query = "DELETE FROM genre_preferences WHERE genreId = ? AND userId = ?";
+
+        int rowsAffected = 0;//To keep the track of rows affected by the delete query
+        for (Integer genreId : genreIds) {
+//            Return the number of rows affected by the query
+            int count = jdbcTemplate.update(query,genreId, user.getUserId());
+            rowsAffected += count;
+            if (count > 0) {
+                jdbcTemplate.update(query, genreId, user.getUserId());
+
+            }
         }
-        return jdbcTemplate.update("DELETE FROM genre_preferences WHERE genreId = ? AND userId = ?",genreId,user.getUserId()) > 0;
-
+        return rowsAffected > 0;
     }
 
+
+    /**
+     * Deletes a user from the system along with associated data.
+     *
+     * This method first deletes sessions associated with the user from the sessions table.
+     * It then checks if the user exists in the users table and if the user has associated genre preferences
+     * in the genre_preferences table. If the user exists in both tables, it deletes data from both tables.
+     * If the user only exists in the users table, it deletes the user from that table.
+     *
+     * @param user the user object to be deleted
+     * @return true if the user and associated data were successfully deleted, false otherwise
+     */
     @Transactional
     @Override
     public boolean deleteUser(User user) {
@@ -229,10 +276,20 @@ public class UserDaoDBImpl implements UserDao {
         }
     }
 
-
     public int findGenreIdByName(String genreName) {
         String sql = "SELECT genreId FROM genres WHERE genreName = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{genreName}, Integer.class);
+    }
+
+    private List<Integer> findGenreIds(List<String> genreNames) {
+        List<Integer> genreIds = new ArrayList<>();
+        for (String genreName : genreNames) {
+            int genreId = findGenreIdByName(genreName);
+            if (genreId != -1) {
+                genreIds.add(genreId);
+            }
+        }
+        return genreIds;
     }
 
 }
