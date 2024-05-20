@@ -16,6 +16,12 @@ public class SessionMapper implements RowMapper<Session> {
         //session.setUser(new UserMapper());
         session.setStartTime(rs.getTimestamp("sessionStart").toLocalDateTime());
         session.setPeriodHours(rs.getInt("sessionPeriod"));
+
+        User user = new User();
+        user.setUserId(rs.getInt("uid"));
+        user.setUsername(rs.getString("username"));
+
+        session.setUser(user);
         return session;
     }
 }

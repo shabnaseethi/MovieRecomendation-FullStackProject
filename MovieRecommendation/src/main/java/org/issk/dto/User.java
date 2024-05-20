@@ -51,4 +51,5 @@ public class User {
     public void setFavouriteMovies(ArrayList<Movie> favouriteMovies) {
         this.favouriteMovies = favouriteMovies;
     }
+
 }

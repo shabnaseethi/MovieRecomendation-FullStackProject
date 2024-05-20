@@ -6,9 +6,12 @@ import org.issk.dto.User;
 import org.issk.mappers.SessionMapper;
 import org.issk.mappers.UserMapper;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -36,7 +39,6 @@ public class UserDaoDBImpl implements UserDao {
         if (getUserByUsername(user.getUsername()) != null){
             return false;
         }
-
         //Hash password
         byte[] passwordHash = enHash(user.getPassword());
 
@@ -132,10 +134,14 @@ public class UserDaoDBImpl implements UserDao {
         }
     }
 
+
     @Override
     public Session getSessionById(String sessionId) {
         try{
-            return jdbcTemplate.queryForObject("SELECT * FROM sessions WHERE sessionId = ?;", new SessionMapper(), sessionId);
+            return jdbcTemplate.queryForObject( "SELECT sessions.*, users.* " +
+                    "FROM sessions " +
+                    "LEFT JOIN users ON sessions.userId = users.uid " +
+                    "WHERE sessions.sessionId = ?", new SessionMapper(), sessionId);
         } catch (DataAccessException e){
             return null;
         }
@@ -146,4 +152,87 @@ public class UserDaoDBImpl implements UserDao {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         return digest.digest(text.getBytes());
     }
+
+    @Override
+    public boolean editPreferences(User user) throws DataAccessException {
+
+        // Find the genreId by genre name
+        int genreId = findGenreIdByName(user.getPreferredGenres().get(0).getName());
+
+        if (genreId == -1) {
+//            If genreID not found
+            return false;
+        }
+        // Check if the given preference already exists for the user
+
+        String query = "SELECT COUNT(*) FROM genre_preferences WHERE userId = ? AND genreId = ?";
+        int count = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), genreId);
+        if (count > 0) {
+            // Preference already exists
+            return false;
+        }
+
+        // Insert the preference into the database
+        int rowsAltered = jdbcTemplate.update(
+                "INSERT INTO genre_preferences (userId, genreId) VALUES (?, ?);",
+                user.getUserId(),
+                genreId
+        );
+        return rowsAltered > 0; // Return true if update successful, false otherwise
+    }
+    @Override
+    public boolean removePreferences(User user) {
+
+        // Find the genreId by name
+        int genreId = findGenreIdByName(user.getPreferredGenres().get(0).getName());
+        if (genreId == -1) {
+            return false;
+        }
+        return jdbcTemplate.update("DELETE FROM genre_preferences WHERE genreId = ? AND userId = ?",genreId,user.getUserId()) > 0;
+
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteUser(User user) {
+
+//        delete Sessions associated with the error
+
+      jdbcTemplate.update("DELETE FROM sessions WHERE userId = ?", user.getUserId());
+
+        // check if the user exists in the users table
+        Integer userExistsCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM users WHERE uid = ?", Integer.class, user.getUserId());
+        boolean userExists = userExistsCount != null && userExistsCount > 0;
+
+        // Check if the user exists in the genre_preferences table
+        Integer userHasPreferencesCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM genre_preferences WHERE userId = ?", Integer.class, user.getUserId());
+        boolean userHasPreferences = userHasPreferencesCount != null && userHasPreferencesCount > 0;
+
+        // If the user exists in both tables, delete data from both tables
+        if (userExists && userHasPreferences) {
+            // Delete associated records from genre_preferences table
+            jdbcTemplate.update("DELETE FROM genre_preferences WHERE userId = ?", user.getUserId());
+
+            // Delete user from users table
+            jdbcTemplate.update("DELETE FROM users WHERE uid = ?", user.getUserId());
+
+            return true;
+        } else if(userExists) {
+
+            jdbcTemplate.update("DELETE FROM users WHERE uid = ?", user.getUserId());
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+    public int findGenreIdByName(String genreName) {
+        String sql = "SELECT genreId FROM genres WHERE genreName = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{genreName}, Integer.class);
+    }
+
 }

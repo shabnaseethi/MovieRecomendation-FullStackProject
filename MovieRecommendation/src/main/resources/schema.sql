@@ -13,3 +13,16 @@ CREATE TABLE sessions (
     sessionPeriod INT DEFAULT NULL,
     CONSTRAINT FK_userId FOREIGN KEY (userId) REFERENCES users(uid)
 );
+
+CREATE TABLE IF NOT EXISTS genres (
+    genreId INT PRIMARY KEY,
+    genreName VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS genre_preferences (
+    genre_preferencesId INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    genreId INT NOT NULL,
+    FOREIGN KEY (genreId) REFERENCES genres(genreId)
+);
+

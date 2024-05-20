@@ -42,4 +42,5 @@ public class Session {
     public void setPeriodHours(int periodHours) {
         this.periodHours = periodHours;
     }
+
 }

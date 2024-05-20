@@ -10,6 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -28,4 +31,27 @@ public class UserController {
     public Session login(@RequestBody User user){
         return userService.login(user);
     }
+
+
+    @PutMapping(value="/edit", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> editPreferences(HttpServletRequest request, @RequestBody User user){
+
+       return userService.editPreferences(request,user);
+
+    }
+
+    @DeleteMapping(value = "/remove", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> deletePreferences(HttpServletRequest request, @RequestBody User user) {
+        return userService.removePreferences(request,user);
+    }
+
+    @DeleteMapping(value = "/deleteuser", consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> deleteUser(HttpServletRequest request, @RequestBody User user) {
+        return userService.deleteUser(request,user);
+    }
+
+
 }

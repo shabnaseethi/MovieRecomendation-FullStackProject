@@ -3,10 +3,15 @@ package org.issk.service;
 import org.issk.dao.UserDao;
 import org.issk.dto.Session;
 import org.issk.dto.User;
+import org.issk.exceptions.InvalidSessionException;
+import org.issk.exceptions.SessionNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.binary.Hex;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -68,4 +73,84 @@ public class UserServiceImpl implements UserService{
         }
         return null;
     }
+
+    @Override
+    public ResponseEntity<String> editPreferences(HttpServletRequest request, User user){
+
+        try {
+            Session session = checkValidUser(request, user); // To check validity of session and user
+
+            user.setUserId(session.getUser().getUserId());
+
+            if(userDao.editPreferences(user)) return ResponseEntity.ok("Preferences edited successfully");
+            else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to edit preferences:Preference already exists");
+        } catch (InvalidSessionException | SessionNotFoundException e) {
+            return ResponseEntity.badRequest().body("Invalid session or session not found"); // Invalid session or session not found
+        }
+        catch (NoSuchAlgorithmException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
+
+    }
+
+    @Override
+    public ResponseEntity<String> removePreferences(HttpServletRequest request, User user) {
+        try {
+            Session session = checkValidUser(request, user);
+            user.setUserId(session.getUser().getUserId());
+            if (userDao.removePreferences(user)) {
+                return ResponseEntity.ok("Preferences removed successfully");
+            } else {
+                return ResponseEntity.badRequest().body("Failed to remove preferences");
+            }
+        } catch (InvalidSessionException | SessionNotFoundException e) {
+            return ResponseEntity.badRequest().body("Invalid session or session not found");
+        } catch (NoSuchAlgorithmException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
+    }
+
+    @Override
+    public ResponseEntity<String> deleteUser(HttpServletRequest request, User user) {
+        try {
+            Session session = checkValidUser(request, user);
+            user.setUserId(session.getUser().getUserId());
+            if (userDao.deleteUser(user)) {
+                return ResponseEntity.ok("User removed successfully");
+            } else {
+                return ResponseEntity.badRequest().body("Failed to remove user");
+            }
+        } catch (InvalidSessionException | SessionNotFoundException e) {
+            return ResponseEntity.badRequest().body("Invalid session or session not found");
+        } catch (NoSuchAlgorithmException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
+    }
+
+    public Session checkValidUser(HttpServletRequest request,User user) throws NoSuchAlgorithmException, InvalidSessionException, SessionNotFoundException {
+
+//        Get sessionID from the header
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new InvalidSessionException("Invalid session ID");
+        }
+
+        String sessionId = authorizationHeader.substring("Bearer ".length());
+        Session session = userDao.getSessionById(sessionId);
+
+        if (session == null) {
+            throw new SessionNotFoundException("Session not found");
+        }
+
+        if (!session.getUser().getUsername().equals(user.getUsername())) {
+            throw new InvalidSessionException("Session does not match the username");
+        }
+
+        if (!userDao.checkSessionValid(session)) {
+            throw new InvalidSessionException("Session is not valid");
+        }
+
+        return session;
+    }
+
 }
