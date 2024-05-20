@@ -1,20 +1,22 @@
 package org.issk.dao;
 
 
+import org.issk.dto.Genre;
 import org.issk.dto.Session;
 import org.issk.dto.User;
+import org.issk.mappers.GenreMapper;
 import org.issk.mappers.SessionMapper;
 import org.issk.mappers.UserMapper;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 
 @Repository
 public class UserDaoDBImpl implements UserDao {
@@ -129,6 +131,30 @@ public class UserDaoDBImpl implements UserDao {
     public User getUserByUsername(String username) {
         try{
             return jdbcTemplate.queryForObject("SELECT * FROM users WHERE userName = ?;", new UserMapper(), username);
+        } catch (DataAccessException e){
+            return null;
+        }
+    }
+
+    /**
+     * Sets the given User object's preferences list to the list in the database
+     * Should only be used to populate an empty user's preferences list.
+     * Database remains unchanged
+     * @param user user whose preferences list is to be updated FROM the database
+     * @return the same user object, with its preferences updated from the database
+     */
+    @Override
+    public User getUserPreferences(User user){
+        try {
+            List<Genre> prefGenres = jdbcTemplate.query("SELECT * FROM genre_preferences " +
+                    "LEFT JOIN genres ON genres.genreId = genre_preferences.genreId " +
+                    "WHERE userId = ?;", new GenreMapper(), user.getUserId());
+            HashMap<Integer, Genre> prefGenresHash = new HashMap<Integer, Genre>();
+            for (Genre genre : prefGenres){
+                prefGenresHash.put(genre.getGenreId(), genre);
+            }
+            user.setPreferredGenres(prefGenresHash);
+            return user;
         } catch (DataAccessException e){
             return null;
         }
