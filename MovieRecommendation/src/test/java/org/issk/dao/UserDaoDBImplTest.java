@@ -1,6 +1,8 @@
 package org.issk.dao;
 
+import org.issk.dto.Genre;
 import org.issk.dto.Session;
+import org.issk.dto.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -164,7 +166,7 @@ class UserDaoDBImplTest {
         genres.setName("Drama");
         genres.setGenreId(12);
 
-        HashMap<Integer,Genre> preferredGenre = new HashMap<>();
+        HashMap<Integer, Genre> preferredGenre = new HashMap<>();
         preferredGenre.put(12,genres);
 
         userTest.setPreferredGenres(preferredGenre);
