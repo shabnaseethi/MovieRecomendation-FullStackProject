@@ -3,6 +3,7 @@ package org.issk.service;
 import org.issk.dao.UserDao;
 import org.issk.dao.UserDaoStubImpl;
 import org.issk.dto.Genre;
+import org.issk.dto.Session;
 import org.issk.dto.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,11 +21,63 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
 
     private UserServiceImpl userService;
+    private UserDaoStubImpl userDao;
 
     public UserServiceImplTest() {
 
-        UserDao userDao = new UserDaoStubImpl();
+        userDao = new UserDaoStubImpl();
         userService = new UserServiceImpl(userDao);
+    }
+
+    @Test
+    void createUserValid() {
+        User testUser = new User();
+        testUser.setUsername("test");
+        testUser.setPassword("validpassword");
+
+        //Run
+        int output = userService.createUser(testUser);
+
+        //Assert
+        assertEquals(output, 204, "User should be successfully created");
+        assertEquals(userDao.onlyUser.getUsername(), testUser.getUsername(), "Usernames should match");
+    }
+
+    @Test
+    void createUserInvalidPassword() {
+        User testUser = new User();
+        testUser.setUsername("test");
+        testUser.setPassword("no");
+
+        //Run
+        int output = userService.createUser(testUser);
+
+        //Assert
+        assertEquals(output, 400, "User should not be created");
+        assertNotEquals(userDao.onlyUser.getUsername(), testUser.getUsername(), "Usernames should not be sent to dao");
+    }
+
+    @Test
+    void loginValid() {
+        User testUser = new User();
+        testUser.setUsername("Personson");
+        testUser.setPassword("baklava");
+
+        Session session = userService.login(testUser);
+
+        assertNotNull(session, "A new session should be returned");
+        assertEquals(testUser.getUsername(), session.getUser().getUsername(), "Usernames should match");
+    }
+
+    @Test
+    void loginInvalid() {
+        User testUser = new User();
+        testUser.setUsername("Personson");
+        testUser.setPassword("wrongpassword");
+
+        Session session = userService.login(testUser);
+
+        assertNull(session, "No session should be returned");
     }
 
     @Test
@@ -199,5 +252,4 @@ class UserServiceImplTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Failed to remove preferences/No preferences to remove",response.getBody());
     }
-
 }
