@@ -97,7 +97,7 @@ public class UserDaoStubImpl implements UserDao {
 
     @Override
     public User getUserPreferences(User user) {
-        return null;
+        return user;
     }
 
     /**
