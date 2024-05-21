@@ -55,13 +55,13 @@ public class MovieAPIDaoAPIImpl implements MovieAPIDao {
     }
 
     @Override
-    public List<Movie> getMoviesByRating(String rating, Boolean sort) {
+    public List<Movie> getMoviesByRating(String ratingfrom, String ratingto, Boolean sort) {
         String sortOrder = "vote_average." + (sort ? "asc" : "desc");
         String apiUrl="https://api.themoviedb.org/3/discover/movie?api_key=89afb92d2b5bba942e667df05182f34a";
         UriComponentsBuilder uriBuilder= UriComponentsBuilder.fromHttpUrl(apiUrl)
                 .queryParam("sort_by",sortOrder)
-                .queryParam("vote_average.gte",rating)
-                .queryParam("vote_average.lte",rating);
+                .queryParam("vote_average.gte",ratingfrom)
+                .queryParam("vote_average.lte",ratingto);
 
         MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
 

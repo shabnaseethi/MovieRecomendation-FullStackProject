@@ -9,6 +9,6 @@ public interface MovieAPIDao {
 
     public List<Movie> getMoviesByGenre(String genre);
     public int getGenreIdFromGenreName(String genre);
-    public List<Movie> getMoviesByRating(String genre, Boolean sort);
+    public List<Movie> getMoviesByRating(String ratingfrom,String ratingto, Boolean sort);
     public List<Movie> getMoviesByPreferences(String userid);
 }
