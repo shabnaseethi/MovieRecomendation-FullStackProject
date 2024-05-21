@@ -4,6 +4,7 @@ import org.issk.dto.Movie;
 import org.issk.service.MovieService;
 import org.issk.service.MovieServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,5 +40,8 @@ public class MovieController {
     public List<Movie> getMoviesByName(@RequestParam String name) {
         return movieService.getMoviesByName(name);
     }
+
+
+
 
 }

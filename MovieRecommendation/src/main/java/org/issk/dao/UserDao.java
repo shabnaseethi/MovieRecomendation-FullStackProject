@@ -29,4 +29,6 @@ public interface UserDao {
 
     boolean deleteUser(User user);
 
+    boolean addFavouriteMovies(User user);
+
 }

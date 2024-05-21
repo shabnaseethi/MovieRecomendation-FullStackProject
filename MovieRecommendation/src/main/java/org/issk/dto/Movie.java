@@ -9,7 +9,7 @@ import java.util.ArrayList;
 @Entity
 public class Movie {
 
-    private String id;
+    private int id;
     private String title;
     //private ArrayList<Genre> genres;
 
@@ -35,14 +35,13 @@ public class Movie {
         this.title = title;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
-
 
 /*public ArrayList<Genre> getGenres() {
         return genres;
@@ -52,11 +51,5 @@ public class Movie {
         this.genres = genres;
     }*/
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                '}';
-    }
+
 }

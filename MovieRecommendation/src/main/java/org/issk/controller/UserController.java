@@ -55,5 +55,11 @@ public class UserController {
         return userService.deleteUser(request,user);
     }
 
+    @PostMapping(value = "/add-movie", consumes=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addFavouriteMovie(HttpServletRequest request, @RequestBody User user){
+        return userService.addFavouriteMovies(request,user);
+
+    }
+
 
 }

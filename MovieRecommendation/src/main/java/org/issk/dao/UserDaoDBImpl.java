@@ -2,6 +2,7 @@ package org.issk.dao;
 
 
 import org.issk.dto.Genre;
+import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
 import org.issk.mappers.GenreMapper;
@@ -299,6 +300,35 @@ public class UserDaoDBImpl implements UserDao {
         else{
             return false;
         }
+    }
+
+    @Override
+    public boolean addFavouriteMovies(User user) {
+
+        List<Integer> movieIds = user.getFavouriteMovies().values().stream()
+                .map(Movie::getId)
+                .collect(Collectors.toList());
+
+        String query = "SELECT COUNT(*) FROM favourite_movies WHERE userId = ? AND movieId = ?";
+        int rowsAffected = 0;
+
+        for (Integer movieId : movieIds) {
+            Integer dbCount = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), movieId);
+            int count = (dbCount != null) ? dbCount : 0;
+
+            if (count == 0) {
+                rowsAffected += count;
+
+                int rowsAltered = jdbcTemplate.update(
+                        "INSERT INTO favourite_movies (userId, movieId) VALUES (?, ?);",
+                        user.getUserId(),
+                        movieId
+                );
+                rowsAffected += rowsAltered;
+            }
+        }
+
+        return rowsAffected > 0;
     }
 
     public int findGenreIdByName(String genreName) {

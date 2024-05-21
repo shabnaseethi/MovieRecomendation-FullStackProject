@@ -131,6 +131,23 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Override
+    public ResponseEntity<String> addFavouriteMovies(HttpServletRequest request, User user) {
+        try {
+            Session session = checkValidUser(request, user);
+
+            user.setUserId(session.getUser().getUserId());
+
+            if(userDao.addFavouriteMovies(user)) return ResponseEntity.ok("Favourite Movies Added successfully");
+            else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add movies:Movie already exists");
+        } catch (InvalidSessionException | SessionNotFoundException e) {
+            return ResponseEntity.badRequest().body("Invalid session or session not found"); // Invalid session or session not found
+        }
+        catch (NoSuchAlgorithmException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
+    }
+
     public Session checkValidUser(HttpServletRequest request,User user) throws NoSuchAlgorithmException, InvalidSessionException, SessionNotFoundException {
 
 //        Get sessionID from the header

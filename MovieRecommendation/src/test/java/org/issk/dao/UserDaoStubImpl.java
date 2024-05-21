@@ -27,6 +27,7 @@ public class UserDaoStubImpl implements UserDao {
         Map<Integer, Genre> immutableMap = Map.of(999, onlyGenre);
         HashMap<Integer, Genre> preferredGenres = new HashMap<>(immutableMap);
 
+
         onlyUser.setPreferredGenres(preferredGenres);
 
         onlySession = new Session();
@@ -147,5 +148,10 @@ public class UserDaoStubImpl implements UserDao {
     public boolean deleteUser(User user) {
         if(user.getUserId() == onlyUser.getUserId()) return true;
         return  false;
+    }
+
+    @Override
+    public boolean addFavouriteMovies(User user) {
+        return false;
     }
 }
