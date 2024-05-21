@@ -27,6 +27,9 @@ class UserServiceImplTest {
         userService = new UserServiceImpl(userDao);
     }
 
+
+
+
     @Test
     @DisplayName("EditPreferenceFailInvalidSession")
     void testEditPreferencesFailure() {
@@ -200,4 +203,11 @@ class UserServiceImplTest {
         assertEquals("Failed to remove preferences/No preferences to remove",response.getBody());
     }
 
+    @Test
+    void createUser() {
+    }
+
+    @Test
+    void login() {
+    }
 }

@@ -24,8 +24,8 @@ public class UserDaoStubImpl implements UserDao {
         onlyUser.setUserId(999);
         onlyUser.setUsername("Personson");
         onlyUser.setPassword("baklava");
-        Map<Integer, Genre> immutableMap = Map.of(999, onlyGenre);
-        HashMap<Integer, Genre> preferredGenres = new HashMap<>(immutableMap);
+        HashMap<Integer, Genre> preferredGenres = new HashMap<>();
+        preferredGenres.put(999, onlyGenre);
 
         onlyUser.setPreferredGenres(preferredGenres);
 
