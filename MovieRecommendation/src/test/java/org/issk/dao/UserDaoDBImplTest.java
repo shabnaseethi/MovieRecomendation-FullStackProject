@@ -3,6 +3,7 @@ package org.issk.dao;
 import org.issk.dto.Genre;
 import org.issk.dto.Session;
 import org.issk.dto.User;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -67,6 +68,7 @@ class UserDaoDBImplTest {
     void getUserByUsername() {
     }
     @Test
+    @DisplayName("EditPreferenceSuccess")
     void editPreferencesSuccessTest() throws NoSuchAlgorithmException {
         User userTest = new User();
         userTest.setUserId(1);
@@ -90,6 +92,7 @@ class UserDaoDBImplTest {
     }
 
     @Test
+    @DisplayName("RemovePreferenceSuccess")
     void removePreferencesSuccessTest() throws NoSuchAlgorithmException {
         User userTest = new User();
         userTest.setUserId(1);
@@ -111,6 +114,7 @@ class UserDaoDBImplTest {
     }
 
     @Test
+    @DisplayName("DeleteUserSuccess")
     void deleteUserSuccessTest() throws NoSuchAlgorithmException {
         User userTest = new User();
         userTest.setUserId(1);
@@ -124,6 +128,7 @@ class UserDaoDBImplTest {
     }
 
     @Test
+    @DisplayName("EditPreferenceFail")
     void editPreferencesFailureTest() throws NoSuchAlgorithmException {
         User userTest = new User();
         userTest.setUserId(1);
@@ -157,6 +162,7 @@ class UserDaoDBImplTest {
     }
 
     @Test
+    @DisplayName("RemovePreferenceFail")
     void removePreferencesFailureTest() throws NoSuchAlgorithmException {
         User userTest = new User();
         userTest.setUserId(1);
@@ -176,6 +182,7 @@ class UserDaoDBImplTest {
     }
 
     @Test
+    @DisplayName("DeleteUserFail")
     void deleteUserFailureTest() throws NoSuchAlgorithmException {
         User userTest = new User();
         userTest.setUserId(10);
