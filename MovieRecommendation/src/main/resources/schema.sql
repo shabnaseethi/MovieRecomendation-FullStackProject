@@ -26,4 +26,11 @@ CREATE TABLE IF NOT EXISTS genre_preferences (
     FOREIGN KEY (genreId) REFERENCES genres(genreId)
 );
 
+CREATE TABLE IF NOT EXISTS favourite_movies (
+    favourite_moviesId INT AUTO_INCREMENT PRIMARY KEY,
+    userId INT NOT NULL,
+    movieId INT NOT NULL,
+    FOREIGN KEY (userId) REFERENCES users(uid)
+);
+
 

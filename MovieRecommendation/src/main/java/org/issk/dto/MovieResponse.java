@@ -24,4 +24,14 @@ public class MovieResponse {
     public int getTotalResults() {
         return totalResults;
     }
+
+    @Override
+    public String toString() {
+        return "MovieResponse{" +
+                "page=" + page +
+                ", results=" + results +
+                ", totalPages=" + totalPages +
+                ", totalResults=" + totalResults +
+                '}';
+    }
 }

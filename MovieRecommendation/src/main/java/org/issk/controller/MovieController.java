@@ -35,4 +35,9 @@ public class MovieController {
         return movieService.getMoviesByPreferences(userid);
     }
 
+    @GetMapping("/moviename")
+    public List<Movie> getMoviesByName(@RequestParam String name) {
+        return movieService.getMoviesByName(name);
+    }
+
 }
