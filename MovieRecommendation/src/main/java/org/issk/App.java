@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class App {
 
-    @Autowired
+   @Autowired
     UserDaoDBImpl userDaoDB;
 
     public static void main(String[] args) {

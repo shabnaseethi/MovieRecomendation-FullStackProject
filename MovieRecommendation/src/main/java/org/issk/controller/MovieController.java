@@ -1,6 +1,8 @@
 package org.issk.controller;
 
 import org.issk.dto.Movie;
+import org.issk.service.GenreNotFoundException;
+import org.issk.service.InvalidRatingsException;
 import org.issk.service.MovieService;
 import org.issk.service.MovieServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +21,18 @@ public class MovieController {
     public MovieController(){
         this.movieService= new MovieServiceImpl();
     }
-
     @GetMapping("/genre/{genre}")
-    public List<Movie>  getMoviesByGenre(@PathVariable String genre){
+    public List<Movie>  getMoviesByGenre(@PathVariable String genre) throws GenreNotFoundException {
         return movieService.getMoviesByGenre(genre);
     }
 
-    @GetMapping("/rating/{rating}/{sort}")
-    public List<Movie>  getMoviesByRating(@PathVariable String rating, @PathVariable String sort){
-        return movieService.getMoviesByRating(rating,Boolean.parseBoolean(sort));
+    @GetMapping("/rating/{ratingfrom}/{ratingto}/{sort}")
+    public List<Movie>  getMoviesByRating(@PathVariable String ratingfrom,@PathVariable String ratingto, @PathVariable String sort) throws InvalidRatingsException {
+        return movieService.getMoviesByRating(ratingfrom,ratingto,sort.equals("1"));
     }
 
     @GetMapping("/preferences/{userid}")
-    public List<Movie>  getMoviesByPreferences(@PathVariable String userid){
+    public List<Movie>  getMoviesByPreferences(@PathVariable String userid) throws GenreNotFoundException {
         return movieService.getMoviesByPreferences(userid);
     }
 
