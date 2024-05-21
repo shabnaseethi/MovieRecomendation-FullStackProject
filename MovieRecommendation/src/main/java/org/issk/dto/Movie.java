@@ -60,4 +60,12 @@ public class Movie {
     public void setGenres(ArrayList<Genre> genres) {
         this.genres = genres;
     }*/
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

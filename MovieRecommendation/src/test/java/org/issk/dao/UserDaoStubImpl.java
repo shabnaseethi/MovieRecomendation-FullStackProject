@@ -24,7 +24,10 @@ public class UserDaoStubImpl implements UserDao {
         onlyUser.setUserId(999);
         onlyUser.setUsername("Personson");
         onlyUser.setPassword("baklava");
-        onlyUser.setPreferredGenres((HashMap)Map.of(999, onlyGenre));
+        Map<Integer, Genre> immutableMap = Map.of(999, onlyGenre);
+        HashMap<Integer, Genre> preferredGenres = new HashMap<>(immutableMap);
+
+        onlyUser.setPreferredGenres(preferredGenres);
 
         onlySession = new Session();
         onlySession.setSessionId("testSessionId");
@@ -62,7 +65,7 @@ public class UserDaoStubImpl implements UserDao {
             //This would be a millennium out...
             return false;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -118,16 +121,31 @@ public class UserDaoStubImpl implements UserDao {
 
     @Override
     public boolean editPreferences(User user) throws NoSuchAlgorithmException {
-        return false;
+        Map<Integer, Genre> userPreferredGenres = user.getPreferredGenres();
+        for (Integer genreId : userPreferredGenres.keySet()) {
+            if (onlyUser.getPreferredGenres().containsKey(genreId)) {
+                onlyUser.getPreferredGenres().remove(genreId);
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean removePreferences(User user) {
+        Map<Integer, Genre> userPreferredGenres = user.getPreferredGenres();
+        for (Integer genreId : userPreferredGenres.keySet()) {
+            if (onlyUser.getPreferredGenres().containsKey(genreId)) {
+                onlyUser.getPreferredGenres().remove(genreId);
+                return true;
+            }
+        }
         return false;
     }
 
     @Override
     public boolean deleteUser(User user) {
-        return false;
+        if(user.getUserId() == onlyUser.getUserId()) return true;
+        return  false;
     }
 }

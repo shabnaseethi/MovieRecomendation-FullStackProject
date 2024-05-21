@@ -54,4 +54,10 @@ public class MovieServiceImpl implements MovieService{
         }
         return movies;
     }
+
+    @Override
+    public List<Movie> getMoviesByName(String name) {
+        List<Movie> movies = movieAPIDao.getMoviesByName(name);
+        return movies;
+    }
 }

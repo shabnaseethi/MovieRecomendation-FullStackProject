@@ -13,6 +13,8 @@ import java.util.*;
 public class MovieAPIDaoAPIImpl implements MovieAPIDao {
 
     private final RestTemplate restTemplate;
+    private static final String API_KEY = "89afb92d2b5bba942e667df05182f34a";
+
 
     @Autowired
     public MovieAPIDaoAPIImpl(RestTemplate restTemplate) {
@@ -90,5 +92,25 @@ public class MovieAPIDaoAPIImpl implements MovieAPIDao {
         else{
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public List<Movie> getMoviesByName(String name) {
+//         String base_url = "https://api.themoviedb.org/3/search/movie?query=";
+//        String apiUrl = String.format("%s/search/movie", base_url);
+//
+//        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(apiUrl)
+//                .queryParam("api_key", API_KEY)
+//                .queryParam("query", name);
+//
+//
+//        try {
+//            MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
+//            System.out.println(response);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+return null;
     }
 }

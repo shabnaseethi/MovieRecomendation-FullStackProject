@@ -28,4 +28,5 @@ public interface UserDao {
     boolean removePreferences(User user);
 
     boolean deleteUser(User user);
+
 }
