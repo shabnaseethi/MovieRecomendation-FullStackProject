@@ -1,6 +1,7 @@
 package org.issk.dao;
 
 import org.issk.dto.Genre;
+import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
 
@@ -20,6 +21,12 @@ public class UserDaoStubImpl implements UserDao {
         onlyGenre.setGenreId(999);
         onlyGenre.setName("Tachyonesque");
 
+        Movie movie = new Movie();
+        movie.setId(2130);
+        movie.setTitle("The Secret");
+        HashMap<Integer,Movie> favMovie = new HashMap<>();
+        favMovie.put(2130,movie);
+
         onlyUser = new User();
         onlyUser.setUserId(999);
         onlyUser.setUsername("Personson");
@@ -29,6 +36,7 @@ public class UserDaoStubImpl implements UserDao {
 
 
         onlyUser.setPreferredGenres(preferredGenres);
+        onlyUser.setFavouriteMovies(favMovie);
 
         onlySession = new Session();
         onlySession.setSessionId("testSessionId");
@@ -125,7 +133,6 @@ public class UserDaoStubImpl implements UserDao {
         Map<Integer, Genre> userPreferredGenres = user.getPreferredGenres();
         for (Integer genreId : userPreferredGenres.keySet()) {
             if (onlyUser.getPreferredGenres().containsKey(genreId)) {
-                onlyUser.getPreferredGenres().remove(genreId);
                 return false;
             }
         }
@@ -152,6 +159,12 @@ public class UserDaoStubImpl implements UserDao {
 
     @Override
     public boolean addFavouriteMovies(User user) {
-        return false;
+        Map<Integer, Movie> userFavMovies = user.getFavouriteMovies();
+        for (Integer Id : userFavMovies.keySet()) {
+            if (onlyUser.getFavouriteMovies().containsKey(Id)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

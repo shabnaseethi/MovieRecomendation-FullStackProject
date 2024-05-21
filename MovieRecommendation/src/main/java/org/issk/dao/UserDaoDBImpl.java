@@ -218,6 +218,7 @@ public class UserDaoDBImpl implements UserDao {
                 rowsAffected += rowsAltered;
             }
         }
+
         return rowsAffected > 0;
     }
 
@@ -315,6 +316,7 @@ public class UserDaoDBImpl implements UserDao {
         for (Integer movieId : movieIds) {
             Integer dbCount = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), movieId);
             int count = (dbCount != null) ? dbCount : 0;
+
 
             if (count == 0) {
                 rowsAffected += count;

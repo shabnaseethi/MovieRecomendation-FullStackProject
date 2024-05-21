@@ -3,6 +3,7 @@ package org.issk.service;
 import org.issk.dao.UserDao;
 import org.issk.dao.UserDaoStubImpl;
 import org.issk.dto.Genre;
+import org.issk.dto.Movie;
 import org.issk.dto.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -199,5 +200,61 @@ class UserServiceImplTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Failed to remove preferences/No preferences to remove",response.getBody());
     }
+
+
+    @Test
+    @DisplayName("AddFavouriteMovieSuccess")
+    void testaddFavouriteMovieSuccess(){
+        User user = new User();
+        user.setUsername("Personson");
+        user.setPassword("baklava");
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer testSessionId");
+
+        Movie movie = new Movie();
+        movie.setId(1234);
+        movie.setTitle("Inception");
+
+        HashMap<Integer, Movie> favMovie = new HashMap<>();
+        favMovie.put(12,movie);
+
+        user.setFavouriteMovies(favMovie);
+
+        ResponseEntity<String> response = userService.addFavouriteMovies(request, user);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Favourite Movies Added successfully",response.getBody());
+
+
+    }
+
+    @Test
+    @DisplayName("AddFavouriteMovieFail")
+    void testaddFavouriteMovieFail(){
+        User user = new User();
+        user.setUsername("Personson");
+        user.setPassword("baklava");
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer testSessionId");
+
+        Movie movie = new Movie();
+        movie.setId(2130);
+        movie.setTitle("The Secret");
+
+        HashMap<Integer, Movie> favMovie = new HashMap<>();
+        favMovie.put(2130,movie);
+
+        user.setFavouriteMovies(favMovie);
+
+        ResponseEntity<String> response = userService.addFavouriteMovies(request, user);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Failed to add movies:Movie already exists",response.getBody());
+
+
+    }
+
 
 }
