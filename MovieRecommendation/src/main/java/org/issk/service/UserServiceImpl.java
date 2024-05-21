@@ -39,47 +39,6 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-    public class MovieLibrary {
-        private List<Movie> movies;
-
-        public MovieLibrary() {
-            this.movies = new ArrayList<>();
-        }
-
-        public void addMovie(Movie movie) {
-            movies.add(movie);
-        }
-
-        public List<Movie> getMoviesAlphabetically() {
-            List<Movie> sortedMovies = new ArrayList<>(movies);
-            Collections.sort(sortedMovies, new Comparator<Movie>() {
-                @Override
-                public int compare(Movie m1, Movie m2) {
-                    return m1.getTitle().compareToIgnoreCase(m2.getTitle());
-                }
-            });
-            return sortedMovies;
-        }
-
-        public static void main(String[] args) {
-            MovieLibrary library = new MovieLibrary();
-            library.addMovie(new Movie("The Godfather"));
-            library.addMovie(new Movie("Pulp Fiction"));
-            library.addMovie(new Movie("Inception"));
-            library.addMovie(new Movie("Forrest Gump"));
-
-            List<Movie> sortedMovies = library.getMoviesSortedAlphabetically();
-            for (Movie movie : sortedMovies) {
-                System.out.println(movie);
-            }
-        }
-    }
-
 
 
 
