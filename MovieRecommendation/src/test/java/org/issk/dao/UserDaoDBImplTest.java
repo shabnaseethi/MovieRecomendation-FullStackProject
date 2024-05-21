@@ -123,14 +123,112 @@ class UserDaoDBImplTest {
     }
 
     @Test
-    void checkSessionValid() {
+    void checkSessionValid_ValidSession() {
+        //This user exists in the database, id: 3
+        User testUser = new User();
+        testUser.setUserId(3);
+        testUser.setUsername("person2");
+
+        //Base session gets stored in DB
+        Session baseTestSession = new Session();
+        baseTestSession.setSessionId("testSessionId");
+        baseTestSession.setUser(testUser);
+        baseTestSession.setStartTime(LocalDateTime.now());
+        baseTestSession.setPeriodHours(1);
+
+        //Test session has matching ID to base (stored) session
+        Session testSession = new Session();
+        testSession.setSessionId("testSessionId");
+        baseTestSession.setStartTime(LocalDateTime.now());
+        testSession.setPeriodHours(1);
+
+        //Store base session
+        try { userDao.storeSession(baseTestSession); } catch (NoSuchAlgorithmException e) {}
+
+        //Assert session matches in DB
+        boolean valid = false;
+        try{ valid = userDao.checkSessionValid(testSession); } catch (NoSuchAlgorithmException e) {}
+
+        assertTrue(valid, "Session exists in database, so it should match");
     }
 
     @Test
-    void authenticateUser() {
+    void checkSessionValid_InvalidSession() {
+        //This user exists in the database, id: 3
+        User testUser = new User();
+        testUser.setUserId(3);
+        testUser.setUsername("person2");
+
+        //Base session gets stored in DB
+        Session baseTestSession = new Session();
+        baseTestSession.setSessionId("testSessionId");
+        baseTestSession.setUser(testUser);
+        baseTestSession.setStartTime(LocalDateTime.now());
+        baseTestSession.setPeriodHours(1);
+
+        //Test session has mismatched ID to base (stored) session
+        Session testSession = new Session();
+        testSession.setSessionId("differentId");
+        baseTestSession.setStartTime(LocalDateTime.now());
+        testSession.setPeriodHours(1);
+
+        //Store base session
+        try { userDao.storeSession(baseTestSession); } catch (NoSuchAlgorithmException e) {}
+
+        //Assert session matches in DB
+        boolean valid = false;
+        try{ valid = userDao.checkSessionValid(testSession); } catch (NoSuchAlgorithmException e) {}
+
+        assertFalse(valid, "Session ID exists not in the database, so it shan't match");
     }
 
     @Test
-    void getUserByUsername() {
+    void authenticateUserValid() {
+        //This entry exists in the database, person2:password
+        User testUser = new User();
+        testUser.setUsername("person2");
+        testUser.setPassword("password");
+
+        boolean authentic = false;
+        try { authentic = userDao.authenticateUser(testUser); } catch (NoSuchAlgorithmException e) {}
+
+        assertTrue(authentic, "User exists in DB with correct username and password, so it should be authentic");
+    }
+
+    @Test
+    void authenticateUserInvalid() {
+        //This entry exists in the database, person2:password
+        User testUser = new User();
+        testUser.setUsername("person2");
+        testUser.setPassword("wrong_password");
+
+        boolean authentic = true;
+        try { authentic = userDao.authenticateUser(testUser); } catch (NoSuchAlgorithmException e) {}
+
+        assertFalse(authentic, "User exists in DB with different username and password, so it can't be authentic");
+    }
+
+    @Test
+    void getUserByValidUsername() {
+        User expectedUser = new User();
+        expectedUser.setUserId(3);
+        expectedUser.setUsername("person2");
+
+        User outUser = userDao.getUserByUsername("person2");
+
+        assertEquals(outUser.getUserId(), expectedUser.getUserId(), "Ids should match");
+        assertEquals(outUser.getUsername(), expectedUser.getUsername(), "Usernames should match");
+    }
+
+    @Test
+    void getUserByInvalidUsername() {
+        User expectedUser = new User();
+        expectedUser.setUserId(3);
+        expectedUser.setUsername("person2");
+
+        //hopefully no users use this username...
+        User outUser = userDao.getUserByUsername("not a valid username");
+
+        assertNull(outUser);
     }
 }
