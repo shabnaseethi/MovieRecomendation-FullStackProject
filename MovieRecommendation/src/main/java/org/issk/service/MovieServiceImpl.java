@@ -2,13 +2,11 @@ package org.issk.service;
 
 import org.issk.dao.MovieAPIDao;
 import org.issk.dao.MovieAPIDaoAPIImpl;
-import org.issk.dao.MovieDaoDBImpl;
 import org.issk.dto.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import  org.issk.service.GenreNotFoundException;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
