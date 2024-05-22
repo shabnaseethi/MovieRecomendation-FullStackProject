@@ -17,6 +17,10 @@ public class MovieResponse {
         return results;
     }
 
+    public void setResults(List<Movie> results) {
+        this.results = results;
+    }
+
     public int getTotalPages() {
         return totalPages;
     }

@@ -11,11 +11,23 @@ public class Movie {
 
     private int id;
     private String title;
+
     private String poster_path;
+
+    private float vote_average;
+
     //private ArrayList<Genre> genres;
 
     public Movie() {
 
+    }
+
+    public float getVote_average() {
+        return vote_average;
+    }
+
+    public void setVote_average(float vote_average) {
+        this.vote_average = vote_average;
     }
 
     @Id
