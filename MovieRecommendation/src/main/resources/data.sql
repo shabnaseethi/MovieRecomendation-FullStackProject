@@ -12,9 +12,12 @@ INSERT INTO genres (genreId,genreName) VALUES
 (28,'Action'),
 (18,'Drama');
 
---INSERT INTO genre_preferences (userId, genreId) VALUES
---(1, 28),
---(2, 18);
+
+INSERT INTO genre_preferences (userId, genreId) VALUES
+(1, 28),
+(1, 18),
+(2, 18);
+
 
 INSERT INTO sessions (sessionId, userId, sessionStart, sessionPeriod) VALUES
 ('testId', 1, CURRENT_TIMESTAMP(), 1);

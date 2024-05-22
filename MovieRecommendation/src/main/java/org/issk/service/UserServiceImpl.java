@@ -1,7 +1,10 @@
 package org.issk.service;
 
 import org.issk.dao.UserDao;
+
+
 import org.issk.dto.Genre;
+
 import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
@@ -18,7 +21,14 @@ import org.apache.commons.codec.binary.Hex;
 import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import java.util.Map;
+
 
 
 @Service
@@ -44,6 +54,7 @@ public class UserServiceImpl implements UserService {
             return 400;
         }
     }
+
 
 
 
