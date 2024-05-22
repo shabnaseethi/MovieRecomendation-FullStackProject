@@ -64,6 +64,14 @@ public class UserDaoStubImpl implements UserDao {
     }
 
     @Override
+    public boolean removeSession(Session session) {
+        if (session.getSessionId().equals(onlySession.getSessionId())){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean checkSessionValid(Session session) throws NoSuchAlgorithmException {
         if (!session.getSessionId().equals(onlySession.getSessionId())){
             return false;
