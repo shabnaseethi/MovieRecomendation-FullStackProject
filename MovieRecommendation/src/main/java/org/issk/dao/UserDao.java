@@ -12,6 +12,8 @@ public interface UserDao {
 
     boolean storeSession(Session session) throws NoSuchAlgorithmException;
 
+    boolean removeSession(Session session);
+
     boolean checkSessionValid(Session session) throws NoSuchAlgorithmException;
 
     boolean authenticateUser(User user) throws NoSuchAlgorithmException;
