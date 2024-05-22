@@ -22,11 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import java.util.Map;
 
 
@@ -43,7 +38,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int createUser(User user) {
-        //TODO better validation
         if ((!user.getUsername().isEmpty()) && (user.getPassword().length() >= 8)) {
             try {
                 return userDao.createUser(user) ? 204 : 500;
@@ -54,10 +48,6 @@ public class UserServiceImpl implements UserService {
             return 400;
         }
     }
-
-
-
-
 
     @Override
     public Session login(User user) {
@@ -106,6 +96,22 @@ public class UserServiceImpl implements UserService {
             return session;
         }
         return null;
+    }
+
+    @Override
+    public ResponseEntity<String> logout(HttpServletRequest request, User user) {
+        try {
+            Session session = checkValidUser(request, user);
+            if (userDao.removeSession(session)) {
+                return ResponseEntity.ok("User logged out successfully");
+            } else {
+                return ResponseEntity.badRequest().body("Failed to log out");
+            }
+        } catch (InvalidSessionException | SessionNotFoundException e) {
+            return ResponseEntity.badRequest().body("Invalid session or session not found");
+        } catch (NoSuchAlgorithmException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
     }
 
     @Override
