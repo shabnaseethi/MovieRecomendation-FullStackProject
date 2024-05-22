@@ -80,6 +80,26 @@ public class UserDaoDBImpl implements UserDao {
     }
 
     /**
+     * Removes a given session from the database, effectively ending the session
+     * @param session session to be removed
+     * @return true if a session was removed, false otherwise
+     * @throws NoSuchAlgorithmException
+     */
+    @Override
+    public boolean removeSession(Session session){
+        //Check to make sure session is in DB
+        if (getSessionById(session.getSessionId()) == null){
+            return false;
+        }
+
+        //Insert session into database
+        int rowsAltered = jdbcTemplate.update("DELETE FROM sessions WHERE sessionId = ?;", session.getSessionId());
+
+        //Check to see if database was altered, return true if so, return false if not
+        return rowsAltered>0;
+    }
+
+    /**
      * Checks to see if the given session is a valid session, within the expiry time
      * @param session session to be validated
      * @return true if the session is still valid, false otherwise
