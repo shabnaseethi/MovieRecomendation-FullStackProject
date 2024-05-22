@@ -34,6 +34,12 @@ public class UserController {
         return (session == null) ? new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED) : new ResponseEntity<>(session, HttpStatus.ACCEPTED);
     }
 
+    @PostMapping(value="/logout",  consumes=MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> logout(HttpServletRequest request, @RequestBody User user){
+        return userService.logout(request, user);
+    }
+
 
     @PutMapping(value="/edit", consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody

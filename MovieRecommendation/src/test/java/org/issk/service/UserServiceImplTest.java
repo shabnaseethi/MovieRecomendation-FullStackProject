@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -307,5 +308,42 @@ class UserServiceImplTest {
         assertEquals("Failed to add movies: Movie already exists",response.getBody());
 
 
+    }
+
+    @Test
+    void logoutValid() {
+        User testUser = new User();
+        testUser.setUsername("Personson");
+        testUser.setPassword("baklava");
+
+        Session testSession = new Session();
+        testSession.setSessionId("testSessionId");
+        testSession.setUser(testUser);
+        testSession.setStartTime(LocalDateTime.MIN);
+        testSession.setPeriodHours(9999999);
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getHeader("Authorization")).thenReturn("Bearer testSessionId");
+
+        ResponseEntity<String> response = userService.logout(request, testUser);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User logged out successfully",response.getBody());
+    }
+
+    @Test
+    void logoutInvalid() {
+        User testUser = new User();
+        testUser.setUsername("Personson");
+        testUser.setPassword("baklava");
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        //emulate invalid session id
+        when(request.getHeader("Authorization")).thenReturn("Bearer invalidTestSessionId__");
+
+        ResponseEntity<String> response = userService.logout(request, testUser);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid session or session not found",response.getBody());
     }
 }
