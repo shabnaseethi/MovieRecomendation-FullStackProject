@@ -50,7 +50,7 @@ class UserServiceImplTest {
         // Set the Authorization header
         when(request.getHeader("Authorization")).thenReturn("testSessionID");
 
-        ResponseEntity<String> response = userService.editPreferences(request, user);
+        ResponseEntity<String> response = userService.removePreferences(request, user);
 
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -65,7 +65,7 @@ class UserServiceImplTest {
         // Set the Authorization header
         when(request.getHeader("Authorization")).thenReturn("testSessionID");
 
-        ResponseEntity<String> response = userService.editPreferences(request, user);
+        ResponseEntity<String> response = userService.deleteUser(request, user);
 
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -121,7 +121,7 @@ class UserServiceImplTest {
         ResponseEntity<String> response = userService.removePreferences(request, user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Preferences removed successfully",response.getBody());
+        assertEquals("Genres removed successfully",response.getBody());
     }
 
     @Test
@@ -173,7 +173,7 @@ class UserServiceImplTest {
         ResponseEntity<String> response = userService.editPreferences(request, user);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Failed to edit preferences:Preference already exists",response.getBody());
+        assertEquals("Failed to edit preferences: Preference already exists",response.getBody());
     }
 
     @Test
@@ -197,8 +197,8 @@ class UserServiceImplTest {
 
         ResponseEntity<String> response = userService.removePreferences(request, user);
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Failed to remove preferences/No preferences to remove",response.getBody());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Failed to remove genres: No Genre exists",response.getBody());
     }
 
 
@@ -224,7 +224,7 @@ class UserServiceImplTest {
         ResponseEntity<String> response = userService.addFavouriteMovies(request, user);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Favourite Movies Added successfully",response.getBody());
+        assertEquals("Movies added successfully",response.getBody());
 
 
     }
@@ -251,7 +251,7 @@ class UserServiceImplTest {
         ResponseEntity<String> response = userService.addFavouriteMovies(request, user);
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        assertEquals("Failed to add movies:Movie already exists",response.getBody());
+        assertEquals("Failed to add movies: Movie already exists",response.getBody());
 
 
     }

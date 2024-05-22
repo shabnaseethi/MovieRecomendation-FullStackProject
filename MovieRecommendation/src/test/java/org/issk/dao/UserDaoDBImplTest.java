@@ -4,6 +4,7 @@ import org.issk.dto.Genre;
 import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
+import org.issk.exceptions.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ class UserDaoDBImplTest {
     }
     @Test
     @DisplayName("EditPreferenceSuccess")
-    void editPreferencesSuccessTest() throws NoSuchAlgorithmException {
+    void editPreferencesSuccessTest() throws NoSuchAlgorithmException, InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -92,7 +93,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("RemovePreferenceSuccess")
-    void removePreferencesSuccessTest() throws NoSuchAlgorithmException {
+    void removePreferencesSuccessTest() throws NoSuchAlgorithmException, InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -128,7 +129,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("EditPreferenceFail")
-    void editPreferencesFailureTest() throws NoSuchAlgorithmException {
+    void editPreferencesFailureTest() throws NoSuchAlgorithmException, InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -162,7 +163,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("RemovePreferenceFail")
-    void removePreferencesFailureTest() throws NoSuchAlgorithmException {
+    void removePreferencesFailureTest() throws InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
