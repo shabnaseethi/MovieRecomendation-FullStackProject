@@ -25,6 +25,7 @@ public class MovieServiceImpl implements MovieService{
     @Override
     public List<Movie> getMoviesByGenre(String genre) throws GenreNotFoundException{
         List<Movie> movies = movieAPIDao.getMoviesByGenre(genre);
+
         //movieDaoDBImpl.addMoviesFromAPI(movies);
         //movieAPIDao.getMoviesByGenre(genre);
         if (movies == null || movies.isEmpty()) {

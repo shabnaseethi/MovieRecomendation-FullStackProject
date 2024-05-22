@@ -33,10 +33,6 @@ public class MovieResponse {
         this.page = page;
     }
 
-    public void setResults(List<Movie> results) {
-        this.results = results;
-    }
-
     public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }
