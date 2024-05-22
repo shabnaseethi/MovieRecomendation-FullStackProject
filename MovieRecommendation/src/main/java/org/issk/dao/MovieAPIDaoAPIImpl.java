@@ -9,13 +9,14 @@ import org.issk.mappers.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 
-@Service
+@Repository
 public class MovieAPIDaoAPIImpl implements MovieAPIDao {
 
     private final RestTemplate restTemplate;

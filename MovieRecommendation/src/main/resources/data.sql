@@ -8,11 +8,11 @@ INSERT INTO users (userName, passwordHash) VALUES
 -- erik, cypher
 -- person2, password
 
-/*
+
 INSERT INTO genres (genreId,genreName) VALUES
 (28,'Action'),
 (18,'Drama');
-*/
+
 
 
 INSERT INTO genre_preferences (userId, genreId) VALUES
