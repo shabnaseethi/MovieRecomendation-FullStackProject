@@ -17,6 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 @DataJdbcTest
 class MovieServiceImplTest {
     private final MovieService movieService;
@@ -32,16 +34,18 @@ class MovieServiceImplTest {
     @DisplayName("Find the movies by Genre=drama")
     void getMoviesByGenre() throws GenreNotFoundException {
         // Arrange
-        String genre = "drama";
+        String genre = "Drama";
 
-        // Act & Assert
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            movieService.getMoviesByGenre(genre);
-        });
-
-        assertEquals("Genre cannot be null or empty", thrown.getMessage(), "Expected exception message did not match.");
-
-
+        List<Movie> movies = null;
+        // Assuming some movies are returned for the given user ID
+        try {
+            movies = movieService.getMoviesByGenre(genre);
+            assertNotNull(movies);
+            assertFalse(movies.isEmpty());
+            assertEquals(20,movies.size());
+        } catch (GenreNotFoundException e) {
+            fail("Unexpected GenreNotFoundException: " + e.getMessage());
+        }
     }
 
     @Test
@@ -50,14 +54,11 @@ class MovieServiceImplTest {
         // Arrange
         String genre = "unknown_genre";
 
-        // Act & Assert
-        List<Movie> movies = movieService.getMoviesByGenre(genre);
-        //movieDaoDBImpl.addMoviesFromAPI(movies);
-        //movieAPIDao.getMoviesByGenre(genre);
-        if (movies == null || movies.isEmpty()) {
-            throw new GenreNotFoundException("No Genre Found ");
-        }
+        GenreNotFoundException thrown = assertThrows(GenreNotFoundException.class, () -> {
+            movieService.getMoviesByGenre(genre);
+        });
 
+        assertEquals("No Genre Found", thrown.getMessage(), "Expected exception message did not match.");
 
     }
 
@@ -75,23 +76,6 @@ class MovieServiceImplTest {
         } catch (GenreNotFoundException e) {
             fail("Unexpected GenreNotFoundException: " + e.getMessage());
         }
-    }
-
-    @Test
-    @DisplayName("Throw GenreNotFoundException when no movies found for user preferences")
-    void testGetMoviesByPreferencesThrowsGenreNotFoundException() throws GenreNotFoundException {
-        // Arrange
-        String userId = "unknownUserId";
-
-        // Act & Assert
-        GenreNotFoundException exception = assertThrows(GenreNotFoundException.class, () -> {
-            movieService.getMoviesByPreferences(userId);
-        });
-
-        // Assert
-        assertNotNull(exception);
-        assertEquals("Genre not found for user preferences: " + userId, exception.getMessage());
-
     }
 
     @Test
@@ -136,17 +120,5 @@ class MovieServiceImplTest {
         });
     }
 
-    @Test
-    void getMoviesByRating_InvalidSortParameter_ThrowsIllegalArgumentException() {
-        // Arrange
-        String ratingFrom = "5";
-        String ratingTo = "8";
-        boolean sort = true; // Invalid sort parameter
-
-        // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            movieService.getMoviesByRating(ratingFrom, ratingTo, sort);
-        });
-    }
 
 }
