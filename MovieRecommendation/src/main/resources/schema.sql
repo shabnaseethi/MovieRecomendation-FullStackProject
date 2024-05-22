@@ -14,7 +14,8 @@ CREATE TABLE sessions (
     CONSTRAINT FK_userId FOREIGN KEY (userId) REFERENCES users(uid)
 );
 
-CREATE TABLE IF NOT EXISTS genres (
+DROP TABLE IF EXISTS genres;
+CREATE TABLE genres (
     genreId INT PRIMARY KEY,
     genreName VARCHAR(255) NOT NULL
 );

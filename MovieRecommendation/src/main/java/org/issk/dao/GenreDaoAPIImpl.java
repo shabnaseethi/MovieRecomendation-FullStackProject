@@ -22,7 +22,7 @@ import java.util.List;
 
 @Repository
 public class GenreDaoAPIImpl {
-    private static final String API_URL = "https://api.themoviedb.org/3/genre/movie/list?api_key=api_key=89afb92d2b5bba942e667df05182f34a";
+    private static final String API_URL = "https://api.themoviedb.org/3/genre/movie/list?api_key=89afb92d2b5bba942e667df05182f34a";
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -35,7 +35,9 @@ public class GenreDaoAPIImpl {
     public void populateGenres() {
         List<Genre> genres = fetchGenresFromAPI();
 
-        String sql = "INSERT INTO genres (id, name) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name)";
+        String sql = "INSERT INTO genres (genreId, genreName) VALUES (?, ?);";
+                /*"ON DUPLICATE KEY UPDATE genreName = VALUES(genreName)";
+                 */
 
         for (Genre genre : genres) {
             jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
