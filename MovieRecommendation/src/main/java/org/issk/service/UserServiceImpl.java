@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService {
             // Validate the preferred genre input
             boolean isValidInput = checkValidInputsForGenre(user);
             if (isValidInput) {
-                //  edit user preferences in the database
+                //  To check whether edit user preference is success
                 boolean isEdited = userDao.editPreferences(user);
                 if (isEdited) {
                     return ResponseEntity.ok("Preferences edited successfully");
