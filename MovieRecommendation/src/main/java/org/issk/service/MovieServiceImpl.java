@@ -7,7 +7,11 @@ import org.issk.exceptions.InvalidRatingsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
 import org.issk.exceptions.GenreNotFoundException;
+
+import org.springframework.web.client.RestTemplate;
+
 
 import java.util.List;
 

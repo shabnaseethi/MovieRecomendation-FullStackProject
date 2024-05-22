@@ -9,9 +9,13 @@ import java.util.ArrayList;
 @Entity
 public class Movie {
 
-    private String id;
+    private int id;
     private String title;
+
+    private String poster_path;
+
     private float vote_average;
+
     //private ArrayList<Genre> genres;
 
     public Movie() {
@@ -44,16 +48,23 @@ public class Movie {
         this.title = title;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
+    public String getPoster_path() {
+        return poster_path;
+    }
 
-/*public ArrayList<Genre> getGenres() {
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
+    }
+
+  /*public ArrayList<Genre> getGenres() {
         return genres;
     }
 
@@ -61,11 +72,5 @@ public class Movie {
         this.genres = genres;
     }*/
 
-    @Override
-    public String toString() {
-        return "Movie{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                '}';
-    }
+
 }

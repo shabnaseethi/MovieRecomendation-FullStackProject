@@ -2,12 +2,15 @@ package org.issk.dao;
 
 
 import org.issk.dto.Genre;
+import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
+import org.issk.exceptions.InvalidInputException;
 import org.issk.mappers.GenreMapper;
 import org.issk.mappers.SessionMapper;
 import org.issk.mappers.UserMapper;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.List;
 
@@ -194,7 +195,7 @@ public class UserDaoDBImpl implements UserDao {
      * @throws DataAccessException if an error occurs while accessing the data source
      */
     @Override
-    public boolean editPreferences(User user) throws DataAccessException {
+    public boolean editPreferences(User user) throws DataAccessException, InvalidInputException {
 
 //        get a list of genre IDS based on genre names
         List<Integer> genreIds = findGenreIds(user.getPreferredGenres().values().stream()
@@ -207,8 +208,9 @@ public class UserDaoDBImpl implements UserDao {
         for (Integer genreId : genreIds) {
             Integer dbCount = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), genreId);
             int count = (dbCount != null) ? dbCount : 0;
-            rowsAffected += count;
+
             if (count == 0) {
+                rowsAffected += count;
                 int rowsAltered = jdbcTemplate.update(
                         "INSERT INTO genre_preferences (userId, genreId) VALUES (?, ?);",
                         user.getUserId(),
@@ -217,6 +219,7 @@ public class UserDaoDBImpl implements UserDao {
                 rowsAffected += rowsAltered;
             }
         }
+
         return rowsAffected > 0;
     }
 
@@ -231,7 +234,7 @@ public class UserDaoDBImpl implements UserDao {
      * @throws DataAccessException if an error occurs while accessing the data source
      */
     @Override
-    public boolean removePreferences(User user) throws DataAccessException {
+    public boolean removePreferences(User user) throws DataAccessException, InvalidInputException {
 
         // Get a list of genre IDs based on genre names
         List<Integer> genreIds = findGenreIds(user.getPreferredGenres().values().stream()
@@ -258,8 +261,7 @@ public class UserDaoDBImpl implements UserDao {
      *
      * This method first deletes sessions associated with the user from the sessions table.
      * It then checks if the user exists in the users table and if the user has associated genre preferences
-     * in the genre_preferences table. If the user exists in both tables, it deletes data from both tables.
-     * If the user only exists in the users table, it deletes the user from that table.
+     * or favorite movies in the respective tables. If the user exists, it deletes the user and associated data.
      *
      * @param user the user object to be deleted
      * @return true if the user and associated data were successfully deleted, false otherwise
@@ -268,45 +270,88 @@ public class UserDaoDBImpl implements UserDao {
     @Override
     public boolean deleteUser(User user) {
 
-//        delete Sessions associated with the error
+        // Delete sessions associated with the user
+        jdbcTemplate.update("DELETE FROM sessions WHERE userId = ?", user.getUserId());
 
-      jdbcTemplate.update("DELETE FROM sessions WHERE userId = ?", user.getUserId());
+        // Check if the user exists and if they have preferences or favourite movies
+        String query = "SELECT " +
+                "u.uid AS userExists, " +
+                "gp.userId AS userHasPreferences, " +
+                "fm.userId AS userHasFavourites " +
+                "FROM users u " +
+                "LEFT JOIN genre_preferences gp ON u.uid = gp.userId " +
+                "LEFT JOIN favourite_movies fm ON u.uid = fm.userId " +
+                "WHERE u.uid = ?";
 
-        // check if the user exists in the users table
-        Integer userExistsCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM users WHERE uid = ?", Integer.class, user.getUserId());
-        boolean userExists = userExistsCount != null && userExistsCount > 0;
+//        List of maps with keys as column aliases and value as the number and each map represents a row in the result set.
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(query, user.getUserId());
 
-        // Check if the user exists in the genre_preferences table
-        Integer userHasPreferencesCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM genre_preferences WHERE userId = ?", Integer.class, user.getUserId());
-        boolean userHasPreferences = userHasPreferencesCount != null && userHasPreferencesCount > 0;
-
-        // If the user exists in both tables, delete data from both tables
-        if (userExists && userHasPreferences) {
-            // Delete associated records from genre_preferences table
-            jdbcTemplate.update("DELETE FROM genre_preferences WHERE userId = ?", user.getUserId());
-
-            // Delete user from users table
-            jdbcTemplate.update("DELETE FROM users WHERE uid = ?", user.getUserId());
-
-            return true;
-        } else if(userExists) {
-
-            jdbcTemplate.update("DELETE FROM users WHERE uid = ?", user.getUserId());
-            return true;
-        }
-        else{
+        if (results.isEmpty()) {
             return false;
         }
+
+//        To confirm the existence of users,movies and genres.
+        boolean userExists = results.stream().anyMatch(row -> row.get("userExists") != null);
+        boolean userHasPreferences = results.stream().anyMatch(row -> row.get("userHasPreferences") != null);
+        boolean userHasFavourites = results.stream().anyMatch(row -> row.get("userHasFavourites") != null);
+
+        if (!userExists) {
+            return false;
+        }
+
+        // Delete associated records if they exist
+        if (userHasPreferences) {
+            jdbcTemplate.update("DELETE FROM genre_preferences WHERE userId = ?", user.getUserId());
+        }
+
+        if (userHasFavourites) {
+            jdbcTemplate.update("DELETE FROM favourite_movies WHERE userId = ?", user.getUserId());
+        }
+        // Delete user from users table
+        jdbcTemplate.update("DELETE FROM users WHERE uid = ?", user.getUserId());
+
+        return true;
     }
 
-    public int findGenreIdByName(String genreName) {
+    @Override
+    public boolean addFavouriteMovies(User user) {
+
+        List<Integer> movieIds = user.getFavouriteMovies().values().stream()
+                .map(Movie::getId)
+                .collect(Collectors.toList());
+
+        String query = "SELECT COUNT(*) FROM favourite_movies WHERE userId = ? AND movieId = ?";
+        int rowsAffected = 0;
+
+        for (Integer movieId : movieIds) {
+            Integer dbCount = jdbcTemplate.queryForObject(query, Integer.class, user.getUserId(), movieId);
+            int count = (dbCount != null) ? dbCount : 0;
+
+            if (count == 0) {
+                rowsAffected += count;
+
+                int rowsAltered = jdbcTemplate.update(
+                        "INSERT INTO favourite_movies (userId, movieId) VALUES (?, ?);",
+                        user.getUserId(),
+                        movieId
+                );
+                rowsAffected += rowsAltered;
+            }
+        }
+
+        return rowsAffected > 0;
+    }
+
+    public int findGenreIdByName(String genreName) throws InvalidInputException {
         String sql = "SELECT genreId FROM genres WHERE genreName = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{genreName}, Integer.class);
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{genreName}, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidInputException("Genre not found: " + genreName);
+        }
     }
 
-    private List<Integer> findGenreIds(List<String> genreNames) {
+    private List<Integer> findGenreIds(List<String> genreNames) throws InvalidInputException {
         List<Integer> genreIds = new ArrayList<>();
         for (String genreName : genreNames) {
             int genreId = findGenreIdByName(genreName);
