@@ -13,4 +13,5 @@ public interface UserService {
     ResponseEntity<String> editPreferences(HttpServletRequest request, User user) ;
     ResponseEntity<String> removePreferences(HttpServletRequest request,User user) ;
     ResponseEntity <String> deleteUser(HttpServletRequest request, User user) ;
+    ResponseEntity<String> addFavouriteMovies(HttpServletRequest request, User user);
 }

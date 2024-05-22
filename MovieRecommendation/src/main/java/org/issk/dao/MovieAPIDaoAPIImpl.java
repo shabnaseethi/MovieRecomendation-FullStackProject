@@ -1,76 +1,113 @@
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.issk.dto.Genre;
-import org.issk.mappers.GenreMapper;
+package org.issk.dao;
+
+import org.issk.dto.Movie;
+import org.issk.dto.MovieResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-@Repository
-public class MovieAPIDaoAPIImpl {
+@Service
+public class MovieAPIDaoAPIImpl implements MovieAPIDao {
 
-    private static final String API_URL = "https://api.themoviedb.org/3/genre/movie/list?api_key=api_key=89afb92d2b5bba942e667df05182f34a";
+    private final RestTemplate restTemplate;
+    private static final String API_KEY = "89afb92d2b5bba942e667df05182f34a";
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private GenreMapper genreMapper;
+    public MovieAPIDaoAPIImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-    @Transactional
-    public void populateGenres() {
-        List<Genre> genres = fetchGenresFromAPI();
+    @Override
+    public List<Movie> getMoviesByGenre(String genre) {
+       int genreId = getGenreIdFromGenreName(genre);
+       String apiUrl="https://api.themoviedb.org/3/discover/movie?api_key=89afb92d2b5bba942e667df05182f34a";
+        UriComponentsBuilder uriBuilder= UriComponentsBuilder.fromHttpUrl(apiUrl).queryParam("with_genres",genreId);
 
-        String sql = "INSERT INTO genres (id, name) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = VALUES(name)";
+        MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
 
-        for (Genre genre : genres) {
-            jdbcTemplate.update(sql, genre.getId(), genre.getName());
+        //Movie[] response=restTemplate.getForObject(uriBuilder.toUriString(),Movie[].class);
+        if(response !=null){
+            return response.getResults();
+        }
+        else{
+            return Collections.emptyList();
+        }
+
+    }
+
+    @Override
+    public int getGenreIdFromGenreName(String genre) {
+       //Code Here
+       //select genreId from Genres where Genre = 'Drama'
+        // return genreId
+       return 878;
+    }
+
+    public String getUserPreferenceGenreIds(String userid) {
+        //Code Here
+        //select genreIds from Genres_Preference where userid = userid
+        // return comma or pipe separated genreId
+        //comma is AND and pipe is OR condition
+        //Sample Movie Ape vs. Mecha Ape
+        return "878|28";
+    }
+
+    @Override
+    public List<Movie> getMoviesByRating(String ratingfrom, String ratingto, Boolean sort) {
+        String sortOrder = "vote_average." + (sort ? "asc" : "desc");
+        String apiUrl="https://api.themoviedb.org/3/discover/movie?api_key=89afb92d2b5bba942e667df05182f34a";
+        UriComponentsBuilder uriBuilder= UriComponentsBuilder.fromHttpUrl(apiUrl)
+                .queryParam("sort_by",sortOrder)
+                .queryParam("vote_average.gte",ratingfrom)
+                .queryParam("vote_average.lte",ratingto);
+
+        MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
+
+        //Movie[] response=restTemplate.getForObject(uriBuilder.toUriString(),Movie[].class);
+        if(response !=null){
+            return response.getResults();
+        }
+        else{
+            return Collections.emptyList();
         }
     }
 
-    private List<Genre> fetchGenresFromAPI() {
-        List<Genre> genres = new ArrayList<>();
+    @Override
+    public List<Movie> getMoviesByPreferences(String userid) {
+        String genreIds = getUserPreferenceGenreIds(userid);
+        String apiUrl="https://api.themoviedb.org/3/discover/movie?api_key=89afb92d2b5bba942e667df05182f34a";
+        UriComponentsBuilder uriBuilder= UriComponentsBuilder.fromHttpUrl(apiUrl)
+                .queryParam("with_genres",genreIds);
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet(API_URL);
-            HttpResponse response = httpClient.execute(request);
-            HttpEntity entity = response.getEntity();
+        MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
 
-            if (entity != null) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()));
-                StringBuilder result = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
+        //Movie[] response=restTemplate.getForObject(uriBuilder.toUriString(),Movie[].class);
+        if(response !=null){
+            return response.getResults();
+        }
+        else{
+            return Collections.emptyList();
+        }
+    }
 
-                // Parse JSON
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode rootNode = mapper.readTree(result.toString());
-                JsonNode genresNode = rootNode.path("genres");
+    @Override
+    public List<Movie> getMoviesByName(String name) {
+         String base_url = "https://api.themoviedb.org/3/search/movie?";
 
-                for (JsonNode genreNode : genresNode) {
-                    Genre genre = new Genre();
-                    genre.setId(genreNode.path("id").asInt());
-                    genre.setName(genreNode.path("name").asText());
-                    genres.add(genre);
-                }
-            }
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(base_url)
+                .queryParam("query", name)
+                .queryParam("api_key",API_KEY);
+
+        try {
+            MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
+            return response.getResults();
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return genres;
     }
 }

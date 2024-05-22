@@ -22,4 +22,12 @@ public class Genre {
     public void setGenreId(int genreId) {
         this.genreId = genreId;
     }
+
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "genreId=" + genreId +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

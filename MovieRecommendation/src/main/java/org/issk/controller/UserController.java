@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     @Autowired
     UserServiceImpl userService;
@@ -38,7 +38,6 @@ public class UserController {
     @PutMapping(value="/edit", consumes=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<String> editPreferences(HttpServletRequest request, @RequestBody User user){
-
        return userService.editPreferences(request,user);
 
     }
@@ -53,6 +52,13 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<String> deleteUser(HttpServletRequest request, @RequestBody User user) {
         return userService.deleteUser(request,user);
+    }
+
+
+    @PostMapping(value = "/add-movie", consumes=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addFavouriteMovie(HttpServletRequest request, @RequestBody User user){
+        return userService.addFavouriteMovies(request,user);
+
     }
 
 
