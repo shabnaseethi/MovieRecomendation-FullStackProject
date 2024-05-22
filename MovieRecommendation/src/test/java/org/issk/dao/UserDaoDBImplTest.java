@@ -1,8 +1,10 @@
 package org.issk.dao;
 
 import org.issk.dto.Genre;
+import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
+import org.issk.exceptions.InvalidInputException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -237,7 +237,7 @@ class UserDaoDBImplTest {
     }
     @Test
     @DisplayName("EditPreferenceSuccess")
-    void editPreferencesSuccessTest() throws NoSuchAlgorithmException {
+    void editPreferencesSuccessTest() throws NoSuchAlgorithmException, InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -261,7 +261,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("RemovePreferenceSuccess")
-    void removePreferencesSuccessTest() throws NoSuchAlgorithmException {
+    void removePreferencesSuccessTest() throws NoSuchAlgorithmException, InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -297,7 +297,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("EditPreferenceFail")
-    void editPreferencesFailureTest() throws NoSuchAlgorithmException {
+    void editPreferencesFailureTest() throws NoSuchAlgorithmException, InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -331,7 +331,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("RemovePreferenceFail")
-    void removePreferencesFailureTest() throws NoSuchAlgorithmException {
+    void removePreferencesFailureTest() throws InvalidInputException {
         User userTest = new User();
         userTest.setUserId(1);
         userTest.setUsername("Ann");
@@ -358,6 +358,28 @@ class UserDaoDBImplTest {
         userTest.setPassword("123456yu");
 
         assertFalse(userDao.deleteUser(userTest));
+    }
+
+    @Test
+    @DisplayName("AddFavouriteMoviesSuccess")
+    void addFavouriteMoviesSuccess(){
+        User userTest = new User();
+        userTest.setUserId(2);
+        userTest.setUsername("Phil");
+
+        Movie movie = new Movie();
+        movie.setId(2130);
+        movie.setTitle("The Secret");
+
+        HashMap<Integer,Movie> favMovie = new HashMap<>();
+
+        favMovie.put(2130,movie);
+
+        userTest.setFavouriteMovies(favMovie);
+
+        assertTrue(userDao.addFavouriteMovies(userTest));
+
+
     }
 
 }

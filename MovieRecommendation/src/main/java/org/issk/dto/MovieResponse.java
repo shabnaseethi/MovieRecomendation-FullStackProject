@@ -29,6 +29,22 @@ public class MovieResponse {
         return totalResults;
     }
 
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setResults(List<Movie> results) {
+        this.results = results;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
+    public void setTotalResults(int totalResults) {
+        this.totalResults = totalResults;
+    }
+
     @Override
     public String toString() {
         return "MovieResponse{" +

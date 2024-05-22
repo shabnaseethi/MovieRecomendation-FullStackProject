@@ -6,13 +6,14 @@ import org.issk.service.InvalidRatingsException;
 import org.issk.service.MovieService;
 import org.issk.service.MovieServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/movie")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class MovieController {
 
     private final MovieService movieService;
@@ -40,5 +41,8 @@ public class MovieController {
     public List<Movie> getMoviesByName(@RequestParam String name) {
         return movieService.getMoviesByName(name);
     }
+
+
+
 
 }

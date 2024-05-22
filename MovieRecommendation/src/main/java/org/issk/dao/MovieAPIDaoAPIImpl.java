@@ -96,15 +96,14 @@ public class MovieAPIDaoAPIImpl implements MovieAPIDao {
 
     @Override
     public List<Movie> getMoviesByName(String name) {
-        String apiUrl = "https://api.themoviedb.org/3/search/movie";
+         String base_url = "https://api.themoviedb.org/3/search/movie?";
 
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(apiUrl)
-                .queryParam("api_key", API_KEY)
-                .queryParam("query", name);
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(base_url)
+                .queryParam("query", name)
+                .queryParam("api_key",API_KEY);
 
         try {
             MovieResponse response = restTemplate.getForObject(uriBuilder.toUriString(), MovieResponse.class);
-            System.out.println(response);
             return response.getResults();
         } catch (Exception e) {
             e.printStackTrace();
