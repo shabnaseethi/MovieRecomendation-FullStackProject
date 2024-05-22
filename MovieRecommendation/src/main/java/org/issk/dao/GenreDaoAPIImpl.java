@@ -27,7 +27,7 @@ public class GenreDaoAPIImpl {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
+    //@Autowired
     private GenreMapper genreMapper;
 
     public GenreDaoAPIImpl(JdbcTemplate jdbcTemplate){

@@ -14,6 +14,7 @@ INSERT INTO genres (genreId,genreName) VALUES
 
 INSERT INTO genre_preferences (userId, genreId) VALUES
 (1, 28),
+(1, 18),
 (2, 18);
 
 INSERT INTO sessions (sessionId, userId, sessionStart, sessionPeriod) VALUES

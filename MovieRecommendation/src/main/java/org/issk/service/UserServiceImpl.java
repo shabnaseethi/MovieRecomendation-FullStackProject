@@ -1,6 +1,7 @@
 package org.issk.service;
 
 import org.issk.dao.UserDao;
+import org.issk.dto.Movie;
 import org.issk.dto.Session;
 import org.issk.dto.User;
 import org.issk.exceptions.InvalidSessionException;
@@ -15,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 
 @Service
@@ -39,46 +44,6 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-    public class MovieLibrary {
-        private List<Movie> movies;
-
-        public MovieLibrary() {
-            this.movies = new ArrayList<>();
-        }
-
-        public void addMovie(Movie movie) {
-            movies.add(movie);
-        }
-
-        public List<Movie> getMoviesAlphabetically() {
-            List<Movie> sortedMovies = new ArrayList<>(movies);
-            Collections.sort(sortedMovies, new Comparator<Movie>() {
-                @Override
-                public int compare(Movie m1, Movie m2) {
-                    return m1.getTitle().compareToIgnoreCase(m2.getTitle());
-                }
-            });
-            return sortedMovies;
-        }
-
-        public static void main(String[] args) {
-            MovieLibrary library = new MovieLibrary();
-            library.addMovie(new Movie("The Godfather"));
-            library.addMovie(new Movie("Pulp Fiction"));
-            library.addMovie(new Movie("Inception"));
-            library.addMovie(new Movie("Forrest Gump"));
-
-            List<Movie> sortedMovies = library.getMoviesSortedAlphabetically();
-            for (Movie movie : sortedMovies) {
-                System.out.println(movie);
-            }
-        }
-    }
 
 
 

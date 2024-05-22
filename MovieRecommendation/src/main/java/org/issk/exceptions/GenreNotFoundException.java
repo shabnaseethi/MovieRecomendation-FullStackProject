@@ -1,4 +1,4 @@
-package org.issk.service;
+package org.issk.exceptions;
 
 public class GenreNotFoundException extends Exception{
 
