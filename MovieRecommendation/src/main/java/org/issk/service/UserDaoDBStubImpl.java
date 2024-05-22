@@ -87,4 +87,9 @@ public class UserDaoDBStubImpl implements UserDao {
         return false;
     }
 
+    @Override
+    public boolean addFavouriteMovies(User user) {
+        return false;
+    }
+
 }
