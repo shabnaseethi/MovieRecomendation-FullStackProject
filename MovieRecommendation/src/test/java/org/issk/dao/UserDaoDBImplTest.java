@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.time.LocalDateTime;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +41,66 @@ class UserDaoDBImplTest {
         Session session = userDao.getSessionById("invalidTestId");
         assertNull(session);
         //assertEquals("testId", session.getSessionId());
+    }
+
+    @Test
+    void removeSessionValid() {
+        //this user exists in the database, id: 3
+        User testUser = new User();
+        testUser.setUserId(3);
+        testUser.setUsername("person2");
+
+        Session testSession = new Session();
+        testSession.setSessionId("testSessionId");
+        testSession.setUser(testUser);
+        testSession.setStartTime(LocalDateTime.MIN);
+        testSession.setPeriodHours(1);
+
+        //Store session
+        try { userDao.storeSession(testSession); } catch (NoSuchAlgorithmException e) {}
+
+        //Remove session
+        boolean removed = userDao.removeSession(testSession);
+
+        //Check removal
+        Session outSession = userDao.getSessionById(testSession.getSessionId());
+
+        //Assert
+        assertNull(outSession, "Session should be removed from DB");
+        assertTrue(removed, "Boolean return should be true");
+    }
+
+    @Test
+    void removeSessionInvalid() {
+        //this user exists in the database, id: 3
+        User testUser = new User();
+        testUser.setUserId(3);
+        testUser.setUsername("person2");
+
+        Session testSession = new Session();
+        testSession.setSessionId("testSessionId");
+        testSession.setUser(testUser);
+        testSession.setStartTime(LocalDateTime.MIN);
+        testSession.setPeriodHours(1);
+
+        Session invalidTestSession = new Session();
+        testSession.setSessionId("invalidTestSessionId");
+        testSession.setUser(testUser);
+        testSession.setStartTime(LocalDateTime.MIN);
+        testSession.setPeriodHours(1);
+
+        //Store session
+        try { userDao.storeSession(testSession); } catch (NoSuchAlgorithmException e) {}
+
+        //Remove session
+        boolean removed = userDao.removeSession(invalidTestSession);
+
+        //Check removal
+        Session outSession = userDao.getSessionById(testSession.getSessionId());
+
+        //Assert
+        assertNotNull(outSession, "Session should not be removed from DB, due to no match");
+        assertFalse(removed, "Boolean return should be false");
     }
 
     @Test
@@ -362,7 +423,7 @@ class UserDaoDBImplTest {
 
     @Test
     @DisplayName("AddFavouriteMoviesSuccess")
-    void addFavouriteMoviesSuccess(){
+    void addFavouriteMoviesSuccess() {
         User userTest = new User();
         userTest.setUserId(2);
         userTest.setUsername("Phil");
@@ -371,9 +432,9 @@ class UserDaoDBImplTest {
         movie.setId(2130);
         movie.setTitle("The Secret");
 
-        HashMap<Integer,Movie> favMovie = new HashMap<>();
+        HashMap<Integer, Movie> favMovie = new HashMap<>();
 
-        favMovie.put(2130,movie);
+        favMovie.put(2130, movie);
 
         userTest.setFavouriteMovies(favMovie);
 
@@ -381,5 +442,4 @@ class UserDaoDBImplTest {
 
 
     }
-
 }

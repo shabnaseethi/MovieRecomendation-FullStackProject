@@ -16,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -29,18 +30,18 @@ public class GenreDaoAPIImpl implements GenreDao{
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+
     public GenreDaoAPIImpl(JdbcTemplate jdbcTemplate){
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @PostConstruct
     @Transactional
     @Override
     public boolean populateGenres() {
         List<Genre> genres = fetchGenresFromAPI();
 
         String sql = "INSERT INTO genres (genreId, genreName) VALUES (?, ?);";
-                /*"ON DUPLICATE KEY UPDATE genreName = VALUES(genreName)";
-                 */
 
         int changed = 0;
         for (Genre genre : genres) {
@@ -102,5 +103,4 @@ public class GenreDaoAPIImpl implements GenreDao{
 
         return genres;
     }
-
 }

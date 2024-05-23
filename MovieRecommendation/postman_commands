@@ -1,0 +1,52 @@
+===Sign up===
+Method:     Post
+URL:        localhost:8080/user/create
+Body type:  JSON
+Body:
+{
+    "username" : "testUser",
+    "password" : "password"
+}
+
+
+===Login===
+Method:     Post
+URL:        localhost:8080/user/login
+Body type:  JSON
+Body:
+{
+    "username" : "testUser",
+    "password" : "password"
+}
+OR
+{
+    "username" : "erik",
+    "password" : "cypher"
+}
+
+===Logout===
+Method:     Post
+URL:        localhost:8080/user/logout
+Header:     Authorization:Bearer {session ID from login}
+Body type:  JSON
+Body:
+{
+    "username":"testUser",
+    "password":"password"
+}
+
+===Add preferences===
+Method:     Post
+URL:        localhost:8080/user/logout
+Header:     Authorization:Bearer {session ID from login}
+Body type:  JSON
+Body:
+{
+
+===Remove preferences===
+
+===Delete User===
+
+===Add Favourite Movie===
+
+

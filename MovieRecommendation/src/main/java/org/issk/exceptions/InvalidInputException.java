@@ -1,5 +1,11 @@
 package org.issk.exceptions;
 
-public class InvalidInputException extends RuntimeException{
-    public InvalidInputException(String invalidInput){}
+public class InvalidInputException extends Exception{
+    public InvalidInputException(String message) {
+        super(message);
+    }
+
+    public InvalidInputException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
