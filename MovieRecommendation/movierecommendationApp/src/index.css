@@ -1,0 +1,92 @@
+
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+ 
+  background-image:url("./components//resources/background.jpg");
+  background-position: center;
+  background-size: cover;
+  color: #ffffff; 
+  font-weight: 400;
+  font-family: 'Fira Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.auth-inner {
+  width: 350px;
+  background: linear-gradient(to bottom, rgb(88, 88, 88), #000000); 
+  box-shadow: -10px -10px 20px rgba(14, 13, 13, 0.05), 
+              10px 10px 20px rgba(0, 0, 0, 0.8); 
+  border-radius: 20px;
+  padding: 40px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+input {
+  padding: 10px;
+  border: none;
+  background: #1e2125; 
+  color: #ffffff; 
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+p {
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  color: #3b78e7; 
+}
+
+.auth-wrapper button {
+  padding: 15px;
+  border: none;
+  background: linear-gradient(to bottom, rgb(88, 88, 88), #000000); 
+  color: #ffffff; 
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: -6px -6px 12px rgba(255, 255, 255, 0.5),
+              6px 6px 12px rgba(0, 0, 0, 0.8); 
+  transition: all 0.3s ease;
+}
+
+.auth-wrapper button:hover {
+  background: #353434; }
+
+.auth-wrapper button:active {
+  background: #353434; 
+}
+.app-name {
+  font-size: 48px;
+  font-weight: 700;
+  color: #4b4848;
+ 
+  text-align: left;
+ 
+}
