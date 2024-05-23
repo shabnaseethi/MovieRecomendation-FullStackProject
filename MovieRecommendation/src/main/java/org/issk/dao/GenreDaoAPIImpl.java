@@ -20,10 +20,11 @@ import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
-public class GenreDaoAPIImpl {
+public class GenreDaoAPIImpl implements GenreDao{
     private static final String API_URL = "https://api.themoviedb.org/3/genre/movie/list?api_key=89afb92d2b5bba942e667df05182f34a";
 
     @Autowired
@@ -36,21 +37,39 @@ public class GenreDaoAPIImpl {
 
     @PostConstruct
     @Transactional
-    public void populateGenres() {
+    @Override
+    public boolean populateGenres() {
         List<Genre> genres = fetchGenresFromAPI();
 
         String sql = "INSERT INTO genres (genreId, genreName) VALUES (?, ?);";
 
+        int changed = 0;
         for (Genre genre : genres) {
             try {
-                jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+                changed = jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
             } catch (DataAccessException e){
                 System.out.println("Already in");
             }
         }
+        return (changed>0);
     }
 
-    private List<Genre> fetchGenresFromAPI() {
+    @Override
+    public HashMap<Integer, Genre> getGenresFromDB(){
+        try {
+            List<Genre> genresList = jdbcTemplate.query("SELECT * FROM genres;", new GenreMapper());
+            HashMap<Integer, Genre> genresHash = new HashMap<Integer, Genre>();
+            for (Genre genre : genresList){
+                genresHash.put(genre.getGenreId(), genre);
+            }
+            return genresHash;
+        } catch (DataAccessException e){
+            return null;
+        }
+    }
+
+    @Override
+    public List<Genre> fetchGenresFromAPI() {
         List<Genre> genres = new ArrayList<>();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {

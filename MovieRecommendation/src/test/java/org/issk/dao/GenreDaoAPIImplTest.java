@@ -2,6 +2,8 @@ package org.issk.dao;
 
 import org.issk.dto.Genre;
 import org.issk.mappers.GenreMapper;
+import org.issk.service.GenreService;
+import org.issk.service.GenreServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.jdbc.DataJdbcTest;
@@ -10,6 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 @DataJdbcTest
 class GenreDaoAPIImplTest {
     private JdbcTemplate jdbcTemplate;
@@ -33,4 +37,17 @@ class GenreDaoAPIImplTest {
          */
 
     }
+    @Test
+    void handleApiException() {
+        when(genreDao.fetchGenresFromAPI()).thenThrow(new RuntimeException("API Error"));
+
+        List<Genre> genres = GenreServiceImpl.();
+
+        assertNotNull(genres, "Genres list should not be null.");
+        assertTrue(genres.isEmpty(), "Genres list should be empty.");
+    }
+}
+
+
+
 }
