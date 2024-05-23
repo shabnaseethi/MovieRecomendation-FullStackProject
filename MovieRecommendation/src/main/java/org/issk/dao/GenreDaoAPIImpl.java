@@ -44,7 +44,11 @@ public class GenreDaoAPIImpl implements GenreDao{
 
         int changed = 0;
         for (Genre genre : genres) {
-            changed += jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+            try {
+                changed = jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+            } catch (DataAccessException e){
+                System.out.println("Already in");
+            }
         }
         return (changed>0);
     }

@@ -3,10 +3,12 @@ package org.issk.service;
 import org.issk.dao.GenreDao;
 import org.issk.dto.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 
+@Service
 public class GenreServiceImpl implements GenreService{
 
     @Autowired
