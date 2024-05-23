@@ -17,13 +17,13 @@ public class GenreController {
     @Autowired
     GenreServiceImpl genreService;
 
-    @GetMapping(value="/refreshdb", consumes= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/refreshdb")
     @ResponseBody
     public int refreshDB(){
         return genreService.populateGenres();
     }
 
-    @GetMapping(value="/get", consumes= MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/get")
     @ResponseBody
     public HashMap<Integer, Genre> getAll(){
         return genreService.getGenres();

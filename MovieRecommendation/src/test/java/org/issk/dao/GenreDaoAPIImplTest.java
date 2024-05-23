@@ -41,13 +41,10 @@ class GenreDaoAPIImplTest {
     void handleApiException() {
         when(genreDao.fetchGenresFromAPI()).thenThrow(new RuntimeException("API Error"));
 
-        List<Genre> genres = GenreServiceImpl.();
+        List<Genre> genres = genreDao.fetchGenresFromAPI();
 
         assertNotNull(genres, "Genres list should not be null.");
         assertTrue(genres.isEmpty(), "Genres list should be empty.");
     }
 }
 
-
-
-}
