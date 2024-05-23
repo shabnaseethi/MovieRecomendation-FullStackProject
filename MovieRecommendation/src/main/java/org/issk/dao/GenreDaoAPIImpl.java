@@ -44,7 +44,7 @@ public class GenreDaoAPIImpl {
         }
     }
 
-    private List<Genre> fetchGenresFromAPI() {
+    public List<Genre> fetchGenresFromAPI() {
         List<Genre> genres = new ArrayList<>();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -78,4 +78,5 @@ public class GenreDaoAPIImpl {
 
         return genres;
     }
+
 }
