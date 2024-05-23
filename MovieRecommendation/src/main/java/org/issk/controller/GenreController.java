@@ -19,8 +19,8 @@ public class GenreController {
 
     @GetMapping(value="/refreshdb", consumes= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public String refreshDB(){
-        return "Genres refreshed";
+    public int refreshDB(){
+        return genreService.populateGenres();
     }
 
     @GetMapping(value="/get", consumes= MediaType.APPLICATION_JSON_VALUE)
