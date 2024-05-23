@@ -1,11 +1,13 @@
 package org.issk.service;
 
 import org.issk.dto.Genre;
+
+import java.util.HashMap;
 import java.util.List;
 
 public interface GenreService {
 
-    List<Genre> getGenres();
+    HashMap<Integer, Genre> getGenres();
 
-    void populateGenres();
+    int populateGenres();
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.issk.dto.Genre;
 import org.issk.mappers.GenreMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +19,11 @@ import org.apache.http.impl.client.HttpClients;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Repository
-public class GenreDaoAPIImpl {
+public class GenreDaoAPIImpl implements GenreDao{
     private static final String API_URL = "https://api.themoviedb.org/3/genre/movie/list?api_key=89afb92d2b5bba942e667df05182f34a";
 
     @Autowired
@@ -32,18 +34,36 @@ public class GenreDaoAPIImpl {
     }
 
     @Transactional
-    public void populateGenres() {
+    @Override
+    public boolean populateGenres() {
         List<Genre> genres = fetchGenresFromAPI();
 
         String sql = "INSERT INTO genres (genreId, genreName) VALUES (?, ?);";
                 /*"ON DUPLICATE KEY UPDATE genreName = VALUES(genreName)";
                  */
 
+        int changed = 0;
         for (Genre genre : genres) {
-            jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+            changed += jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+        }
+        return (changed>0);
+    }
+
+    @Override
+    public HashMap<Integer, Genre> getGenresFromDB(){
+        try {
+            List<Genre> genresList = jdbcTemplate.query("SELECT * FROM genres;", new GenreMapper());
+            HashMap<Integer, Genre> genresHash = new HashMap<Integer, Genre>();
+            for (Genre genre : genresList){
+                genresHash.put(genre.getGenreId(), genre);
+            }
+            return genresHash;
+        } catch (DataAccessException e){
+            return null;
         }
     }
 
+    @Override
     public List<Genre> fetchGenresFromAPI() {
         List<Genre> genres = new ArrayList<>();
 
