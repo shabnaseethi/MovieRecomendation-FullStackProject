@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.issk.dto.Genre;
 import org.issk.mappers.GenreMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -32,16 +34,19 @@ public class GenreDaoAPIImpl {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @PostConstruct
     @Transactional
     public void populateGenres() {
         List<Genre> genres = fetchGenresFromAPI();
 
         String sql = "INSERT INTO genres (genreId, genreName) VALUES (?, ?);";
-                /*"ON DUPLICATE KEY UPDATE genreName = VALUES(genreName)";
-                 */
 
         for (Genre genre : genres) {
-            jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+            try {
+                jdbcTemplate.update(sql, genre.getGenreId(), genre.getName());
+            } catch (DataAccessException e){
+                System.out.println("Already in");
+            }
         }
     }
 
